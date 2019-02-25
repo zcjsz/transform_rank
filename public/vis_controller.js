@@ -23,49 +23,20 @@ class VisController {
       }
 
       if(visData.error) {
-        console.log('visData.error', visData.error);
+        console.log('Vis Error', visData.error);
         this.container.innerHTML = visData.html;
         return;
-      } else {
-        this.container.innerHTML = '';
       }
 
-      let chartAxis = visData.chart.axis;
-      let chartType = visData.chart.type;
-      let groupField = visData.chart.group;
-      let groupsData = visData.chart.groupsData;
-
-      let chartData = [];
-
-      for (let groupName in groupsData) {
-        let groupData = groupsData[groupName];
-        let rowkeyList = groupData.rowkeyList;
-        let xDataList = groupData.xDataList;
-        let yDataList = groupData.yDataList;
-        let trace = {
-          text: rowkeyList,
-          x: xDataList,
-          y: yDataList,
-          mode: 'markers',
-          type: chartType,
-          name: groupName,
-          marker: { size: 10 }
-        };
-        chartData.push(trace);
+      if(!(visData.chart && visData.chart.data)) {
+        console.log('Chart Data / Setting Error!!', visData);
+        this.container.innerHTML = display_error('Chart Data / Setting Error!!');
+        return;
       }
 
-      let layout = {
-        xaxis: {
-          title: "Final Yield"
-        },
-        yaxis: {
-          title: "First Yield"
-        },
-        title:'Final Yield vs First Yield'
-      };
+      this.container.innerHTML = '';
 
-
-      Plotly.newPlot(this.container, chartData, layout);
+      Plotly.newPlot(this.container, visData.chart.data, visData.chart.layout);
 
       resolve('done rendering');
     });

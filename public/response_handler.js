@@ -1,3 +1,6 @@
+const ExpCalc = require('../utils/ExpCalc');
+const REG_NUMBER = /^(\+|-)?[0-9]+\.?[0-9]*$/;
+
 export const createResponseHandler = function(Private, es, indexPatterns, $sanitize) {
 
   const myResponseHandler = (vis, resp) => {
@@ -42,22 +45,32 @@ export const createResponseHandler = function(Private, es, indexPatterns, $sanit
       }
 
       let q1Fields, q2Fields, q1Alias, q2Alias, q1Join, q2Join, table, chart;
+      let q1FieldsNew = [], q2FieldsNew = [];
 
       if(!resp.config) {
         resolve({
-          error: "Query Setting Error!!",
-          html: display_error("Query Setting Error : No Query Config Setting!!")
+          error: "Configuration Setting Error!!",
+          html: display_error("Configuration Setting Error : No Configuration!!")
         });
         return;
       } else {
-        q1Fields = resp.config.q1.fields;
-        q2Fields = resp.config.q2.fields;
-        q1Alias = resp.config.q1.alias;
-        q2Alias = resp.config.q2.alias;
-        q1Join = resp.config.q1.join;
-        q2Join = resp.config.q2.join;
-        table = resp.config.table;
-        chart = resp.config.chart;
+        let configVerf = configVerify(resp.config);
+        if(configVerf.pass===false) {
+          resolve({
+            error: "Configuration Setting Error!!",
+            html: display_error("Configuration Setting Error : " + configVerf.result)
+          });
+          return;
+        } else {
+          q1Fields = resp.config.q1.fields;
+          q2Fields = resp.config.q2.fields;
+          q1Alias = resp.config.q1.alias;
+          q2Alias = resp.config.q2.alias;
+          q1Join = resp.config.q1.join;
+          q2Join = resp.config.q2.join;
+          table = resp.config.table;
+          chart = resp.config.chart;
+        }
       }
 
       let points = {};
@@ -65,7 +78,10 @@ export const createResponseHandler = function(Private, es, indexPatterns, $sanit
       fetchAndMergePonitData('q1', q1Fields, q1Alias, q1Join, q1Hits, points);
       fetchAndMergePonitData('q2', q2Fields, q2Alias, q2Join, q2Hits, points);
 
-      console.log(points);
+      newQnFields(q1Fields, q1Alias, q1FieldsNew);
+      newQnFields(q2Fields, q2Alias, q2FieldsNew);
+
+      filterPoints(q1FieldsNew, q2FieldsNew, points);
 
       if(chart && chart.type) {
         generateChartData(points, chart);
@@ -85,6 +101,18 @@ export const createResponseHandler = function(Private, es, indexPatterns, $sanit
 
     });
   };
+
+// =====================================================================================================================
+// =====================================================================================================================
+
+  function configVerify(config) {
+    let q1Fields = config.q1.fields;
+    let q2Fields = config.q2.fields;
+    if(!Array.isArray(q1Fields) || q1Fields.length<=0) return { pass: false, result: 'q1 fields setting error!!'};
+    if(!Array.isArray(q2Fields) || q2Fields.length<=0) return { pass: false, result: 'q1 fields setting error!!'};
+    return { pass: true, result: 'config setting ok!'}
+  }
+
 
   function fetchAndMergePonitData(Qn, QnFields, QnAlias, QnJoin, QnHits, Points) {
     
@@ -128,6 +156,30 @@ export const createResponseHandler = function(Private, es, indexPatterns, $sanit
   }
 
 
+  function newQnFields(QnFields, QnAlias, QnFieldsNew) {
+    for(let i=0; i<QnFields.length; i++) {
+      let fieldName = QnFields[i];
+      if(QnAlias && QnAlias[fieldName] && QnAlias[fieldName].new) {
+        QnFieldsNew.push(fieldName);
+        QnFieldsNew.push(QnAlias[fieldName].name);
+      } else {
+        QnFieldsNew.push(fieldName);
+      }
+    }
+  }
+
+
+//q1Field + q2Field 数组长度与 point keys 数组长度比较，如果 point keys 长度小了，那就说明该点只有一组值，需要被丢弃
+  function filterPoints(q1FieldsNew, q2FieldsNew, points) {
+    let fullFieldsLength = q1FieldsNew.length + q2FieldsNew.length;
+    for(let key in points) {
+      if(fullFieldsLength > Object.keys(points[key]).length) {
+        delete points[key];
+      }
+    }
+  }
+
+
   function generateChartData(points, chart) {
     console.log('generateChartData');
     let chartType = chart.type.toString().toLowerCase();
@@ -148,16 +200,50 @@ export const createResponseHandler = function(Private, es, indexPatterns, $sanit
       return;
     }
 
-    let xAxis = chart.axis.x;
-    let yAxis = chart.axis.y;
+    if(!chart.axis.x.expr) {
+      chart.error = "Scatter Axis X-Expr Error";
+      return;
+    }
+
+    if(!chart.axis.y.expr) {
+      chart.error = "Scatter Axis Y-Expr Error";
+      return;
+    }
+
+    let chartTitle = chart.title ? chart.title : "Chart - Title";
+    let xAxisTitle = chart.axis.x.title ? chart.axis.x.title : chart.axis.x.expr;
+    let yAxisTitle = chart.axis.y.title ? chart.axis.y.title : chart.axis.y.expr;
+
+    let xAxisExpr = chart.axis.x.expr;
+    let yAxisExpr = chart.axis.y.expr;
     let group = chart.group;
-    let groupData = {};
+    let groupsData = {};
+
+    let expCalc = new ExpCalc();
+    let xAxisExprSeg = expCalc.set(xAxisExpr).trim().minus().segment().getSeg();
+    let yAxisExprSeg = expCalc.set(yAxisExpr).trim().minus().segment().getSeg();
 
     for (let rowkey in points) {
 
       let point = points[rowkey];
-      let xData = point[xAxis] ? point[xAxis] : void 0;
-      let yData = point[yAxis] ? point[yAxis] : void 0;
+      let xSeg = xAxisExprSeg.slice(0);
+      let ySeg = yAxisExprSeg.slice(0);
+
+      for(let i=0; i<xAxisExprSeg.length; i++) {
+        if(point[xSeg[i]] && REG_NUMBER.test(point[xSeg[i]])) {
+          xSeg[i] = point[xSeg[i]];
+        }
+      }
+
+      for(let j=0; j<ySeg.length; j++) {
+        if(point[ySeg[j]] && REG_NUMBER.test(point[ySeg[j]])) {
+          ySeg[j] = point[ySeg[j]];
+        }
+      }
+
+      let xData = expCalc.toRpn(xSeg).calcRpn().getResult();
+      let yData = expCalc.toRpn(ySeg).calcRpn().getResult();
+
       if(xData === void 0 || yData === void 0) continue;
 
       let grp = '';
@@ -166,21 +252,51 @@ export const createResponseHandler = function(Private, es, indexPatterns, $sanit
       }
       if(grp) grp = grp.slice(0,-1);
 
-      if(!groupData[grp]) {
-        groupData[grp] = {
+      if(!groupsData[grp]) {
+        groupsData[grp] = {
           rowkeyList: [],
           xDataList: [],
           yDataList: []
         }
       }
 
-      groupData[grp].rowkeyList.push(rowkey);
-      groupData[grp].xDataList.push(parseFloat(xData));
-      groupData[grp].yDataList.push(parseFloat(yData));
+      groupsData[grp].rowkeyList.push(rowkey);
+      groupsData[grp].xDataList.push(parseFloat(xData));
+      groupsData[grp].yDataList.push(parseFloat(yData));
 
     }
 
-    chart.groupsData = groupData;
+    let chartData = [];
+
+    for (let groupName in groupsData) {
+      let groupData = groupsData[groupName];
+      let rowkeyList = groupData.rowkeyList;
+      let xDataList = groupData.xDataList;
+      let yDataList = groupData.yDataList;
+      let trace = {
+        text: rowkeyList,
+        x: xDataList,
+        y: yDataList,
+        mode: 'markers',
+        type: chart.type,
+        name: groupName,
+        marker: { size: 10 }
+      };
+      chartData.push(trace);
+    }
+
+    let layout = {
+      xaxis: {
+        title: xAxisTitle
+      },
+      yaxis: {
+        title: yAxisTitle
+      },
+      title: chartTitle
+    };
+
+    chart.data = chartData;
+    chart.layout = layout;
   }
 
 

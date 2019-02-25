@@ -21,7 +21,6 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
 
   let metadata = {
     "query_config": {
-
       "q1": {
         "fields": [
           "Lot",
@@ -47,7 +46,6 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
           "Operation"
         ]
       },
-
       "q2": {
         "fields": [
           "LotNumber",
@@ -59,7 +57,6 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
           "Operation"
         ]
       },
-
       "table": {
         "rowdata": [
           "q1.Operation",
@@ -69,19 +66,24 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
           "q2.kdfFirstYield"
         ]
       },
-
       "chart": {
         "type": "scatter",
+        "title": "Final Yield vs First Yield",
         "axis": {
-          "x": "q1.Yield",
-          "y": "q2.kdfFirstYield"
+          "x": {
+            "expr": "q1.Yield",
+            "title": "Final Yield"
+          },
+          "y": {
+            "expr": "q2.kdfFirstYield * 100",
+            "title": "First Yield"
+          }
         },
         "group": [
           "q1.Operation",
           "q1.Tprog"
         ]
       }
-
     }
   };
 
