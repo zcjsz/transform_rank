@@ -1,0 +1,16 @@
+details {
+    margin:15px 0px;
+}
+
+label {
+    display: block;
+    margin:5px 0px;
+}
+
+summary {
+    margin:10px 0px;
+}
+
+.template-editor {
+    height: 500px;
+}

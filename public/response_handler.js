@@ -1,17 +1,18 @@
 const ExpCalc = require('../utils/ExpCalc');
 const REG_NUMBER = /^(\+|-)?[0-9]+\.?[0-9]*$/;
+const sizeof = require('object-sizeof');
 
 export const createResponseHandler = function(Private, es, indexPatterns, $sanitize) {
 
   const myResponseHandler = (vis, resp) => {
 
-    console.log('@@@@@@ myResponseHandler @@@@@@');
+    console.log('@@@@@@ myResponseHandler @@@@@@', resp, sizeof(resp.result.hits)/1000000);
+
+    const display_error = (message) => {
+      return `<div style="color:red"><i>${message}</i></div>`;
+    };
 
     return new Promise((resolve, reject) => {
-
-      function display_error(message) {
-        return `<div style="color:red"><i>${message}</i></div>`;
-      }
 
       if(resp.error) {
         resolve({
@@ -21,30 +22,18 @@ export const createResponseHandler = function(Private, es, indexPatterns, $sanit
         return;
       }
 
-      let responses, q1Rep, q2Rep, q1Hits, q2Hits;
-      if(!(resp.response && resp.response.responses && Array.isArray(resp.response.responses))) {
+      let hits;
+      if(!(resp.hits && Array.isArray(resp.hits))) {
         resolve({
           error: "Response Error!!",
           html: display_error("Response Error : No Response Data!!")
         });
         return;
       } else {
-        responses = resp.response.responses;
-        q1Rep = responses[0];
-        q2Rep = responses[1];
-        if (!(q1Rep.status === 200 && q1Rep.timed_out === false && q2Rep.status === 200 && q2Rep.timed_out === false)) {
-          resolve({
-            error: "Response Error!!",
-            html: display_error("Response Error : Response Data Error!!")
-          });
-          return;
-        } else {
-          q1Hits = q1Rep.hits.hits;
-          q2Hits = q2Rep.hits.hits;
-        }
+        hits = resp.hits;
       }
 
-      let q1Fields, q2Fields, q1Alias, q2Alias, q1Join, q2Join, table, chart;
+      let fields, alias, table, chart;
       let q1FieldsNew = [], q2FieldsNew = [];
 
       if(!resp.config) {
@@ -62,41 +51,50 @@ export const createResponseHandler = function(Private, es, indexPatterns, $sanit
           });
           return;
         } else {
-          q1Fields = resp.config.q1.fields;
-          q2Fields = resp.config.q2.fields;
-          q1Alias = resp.config.q1.alias;
-          q2Alias = resp.config.q2.alias;
-          q1Join = resp.config.q1.join;
-          q2Join = resp.config.q2.join;
+          fields = resp.config.q1.fields;
+          alias = resp.config.q1.alias;
           table = resp.config.table;
           chart = resp.config.chart;
         }
       }
 
-      let points = {};
+/*
+new column
+- column name
+- column value
+  - fill fixed value
+  - copy column data
+  - fill expression value
+  - fill value by condition
+    - match columns data
+    - match expression value
+ */
 
-      fetchAndMergePonitData('q1', q1Fields, q1Alias, q1Join, q1Hits, points);
-      fetchAndMergePonitData('q2', q2Fields, q2Alias, q2Join, q2Hits, points);
-
-      newQnFields(q1Fields, q1Alias, q1FieldsNew);
-      newQnFields(q2Fields, q2Alias, q2FieldsNew);
-
-      filterPoints(q1FieldsNew, q2FieldsNew, points);
-
-      if(chart && chart.type) {
-        generateChartData(points, chart);
-      }
-
-      if(chart.error) {
-        resolve({
-          error: "Chart Data Error!!",
-          html: display_error("Chart Data Error : " + chart.error)
-        });
-        return;
-      }
+      // let points = {};
+      //
+      // fetchAndMergePonitData('q1', q1Fields, q1Alias, q1Join, q1Hits, points);
+      // fetchAndMergePonitData('q2', q2Fields, q2Alias, q2Join, q2Hits, points);
+      //
+      // newQnFields(q1Fields, q1Alias, q1FieldsNew);
+      // newQnFields(q2Fields, q2Alias, q2FieldsNew);
+      //
+      // generateTableData(points, table, q1FieldsNew, q2FieldsNew);
+      //
+      // if(chart && chart.type) {
+      //   generateChartData(points, chart, q1FieldsNew, q2FieldsNew);
+      // }
+      //
+      // if(chart.error) {
+      //   resolve({
+      //     error: "Chart Data Error!!",
+      //     html: display_error("Chart Data Error : " + chart.error)
+      //   });
+      //   return;
+      // }
 
       resolve({
-        chart: chart
+        chart: chart,
+        table: table
       })
 
     });
@@ -115,7 +113,7 @@ export const createResponseHandler = function(Private, es, indexPatterns, $sanit
 
 
   function fetchAndMergePonitData(Qn, QnFields, QnAlias, QnJoin, QnHits, Points) {
-    
+
     for(let i=0; i<QnHits.length; i++) {
 
       let sourceData = QnHits[i]._source;
@@ -180,18 +178,18 @@ export const createResponseHandler = function(Private, es, indexPatterns, $sanit
   }
 
 
-  function generateChartData(points, chart) {
+  function generateChartData(points, chart, q1FieldsNew, q2FieldsNew) {
     console.log('generateChartData');
     let chartType = chart.type.toString().toLowerCase();
     switch(chartType) {
       case 'scatter' :
-        generateScatterData(points, chart); break;
+        generateScatterData(points, chart, q1FieldsNew, q2FieldsNew); break;
       default: break;
     }
   }
 
 
-  function generateScatterData(points, chart) {
+  function generateScatterData(points, chart, q1FieldsNew, q2FieldsNew) {
 
     console.log('generateScatterData');
 
@@ -209,6 +207,8 @@ export const createResponseHandler = function(Private, es, indexPatterns, $sanit
       chart.error = "Scatter Axis Y-Expr Error";
       return;
     }
+
+    filterPoints(q1FieldsNew, q2FieldsNew, points);
 
     let chartTitle = chart.title ? chart.title : "Chart - Title";
     let xAxisTitle = chart.axis.x.title ? chart.axis.x.title : chart.axis.x.expr;
@@ -297,6 +297,52 @@ export const createResponseHandler = function(Private, es, indexPatterns, $sanit
 
     chart.data = chartData;
     chart.layout = layout;
+  }
+
+
+  function generateTableData(points, table, q1FieldsNew, q2FieldsNew) {
+    let headers = [];
+    if(table && table.headers && Array.isArray(table.headers)) {
+      headers = table.headers;
+    } else {
+      for(let a in q1FieldsNew) {
+        headers.push('q1.' + q1FieldsNew[a]);
+      }
+      for(let b in q2FieldsNew) {
+        headers.push('q2.' + q2FieldsNew[b]);
+      }
+    }
+
+    let ary = new Array(headers.length);
+    let lines = [];
+    let fmtHeader = [];
+
+    for(let i=0; i<headers.length; i++) {
+      ary[i] = [];
+      fmtHeader.push('\"' + headers[i] + '\"');
+    }
+    lines.push(fmtHeader.join(','));
+
+    for (let rowkey in points) {
+      let point = points[rowkey];
+      let line = [];
+      for(let j=0; j<ary.length; j++) {
+        let cellVal = point[headers[j]];
+        if(cellVal) {
+          ary[j].push(cellVal);
+          line.push('\"' + cellVal + '\"');
+        } else {
+          ary[j].push('');
+          line.push('');
+        }
+      }
+      lines.push(line.join(','));
+    }
+
+    table.headers = headers;
+    table.values = ary;
+    table.csv = lines.join('\n');
+
   }
 
 

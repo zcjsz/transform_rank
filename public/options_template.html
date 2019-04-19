@@ -1,46 +1,45 @@
 <div ng-controller="TransformVisEditorController as paramCtrl" style="width: 100%;">
 
     <details>
-        <summary>Query - 1</summary>
+        <summary>Query DSL</summary>
         <div class="form-group">
-            <label> Index Pattern 1 </label>
+            <label> Index Pattern : </label>
             <select name="indexPattern1" class="form-control ng-pristine ng-untouched"
                     ng-model="editorState.params.indexpattern1" required
                     ng-options="option.id as option.attributes.title for option in indexPatternOptions"></select>
         </div>
         <div class="form-group">
-            <label> Query DSL 1 </label>
             <div ui-ace="{ onLoad: aceLoaded, mode: 'json' }" ng-model="editorState.params.querydsl1"
                  class="template-editor form-control ng-pristine ng-untouched ng-valid ng-scope ace_editor ace-tm"/>
         </div>
     </details>
-    <br/>
+    <!--<details>-->
+        <!--<summary>Query - 2</summary>-->
+        <!--<div class="form-group">-->
+            <!--<label> Index Pattern 2 </label>-->
+            <!--<select name="indexPattern2" class="form-control ng-pristine ng-untouched"-->
+                    <!--ng-model="editorState.params.indexpattern2" required-->
+                    <!--ng-options="option.id as option.attributes.title for option in indexPatternOptions"></select>-->
+        <!--</div>-->
+        <!--<div class="form-group">-->
+            <!--<label> Query DSL 2 </label>-->
+            <!--<div ui-ace="{ onLoad: aceLoaded, mode: 'json' }" ng-model="editorState.params.querydsl2"-->
+                 <!--class="template-editor form-control ng-pristine ng-untouched ng-valid ng-scope ace_editor ace-tm"/>-->
+        <!--</div>-->
+    <!--</details>-->
     <details>
-        <summary>Query - 2</summary>
-        <div class="form-group">
-            <label> Index Pattern 2 </label>
-            <select name="indexPattern2" class="form-control ng-pristine ng-untouched"
-                    ng-model="editorState.params.indexpattern2" required
-                    ng-options="option.id as option.attributes.title for option in indexPatternOptions"></select>
-        </div>
-        <div class="form-group">
-            <label> Query DSL 2 </label>
-            <div ui-ace="{ onLoad: aceLoaded, mode: 'json' }" ng-model="editorState.params.querydsl2"
-                 class="template-editor form-control ng-pristine ng-untouched ng-valid ng-scope ace_editor ace-tm"/>
+        <summary>Configuration</summary>
+        <div ng-if="options.allow_unsafe" class="form-group">
+          <div ui-ace="{ onLoad: aceLoaded, mode: 'javascript' }" ng-model="editorState.params.meta"
+               class="template-editor form-control ng-pristine ng-untouched ng-valid ng-scope ace_editor ace-tm"/>
         </div>
     </details>
     <br/>
-    <div ng-if="options.allow_unsafe" class="form-group">
-      <label> Configuration </label>
-      <div ui-ace="{ onLoad: aceLoaded, mode: 'javascript' }" ng-model="editorState.params.meta"
-           class="template-editor form-control ng-pristine ng-untouched ng-valid ng-scope ace_editor ace-tm"/>
-    </div>
-    <br/>
-    <div class="form-group">
-      <label> Template </label>
-      <div ui-ace="{ onLoad: aceLoaded, mode: 'html' }" ng-model="editorState.params.formula"
-           class="template-editor form-control ng-pristine ng-untouched ng-valid ng-scope ace_editor ace-tm"/>
-    </div>
+    <!--<div class="form-group">-->
+      <!--<label> Template </label>-->
+      <!--<div ui-ace="{ onLoad: aceLoaded, mode: 'html' }" ng-model="editorState.params.formula"-->
+           <!--class="template-editor form-control ng-pristine ng-untouched ng-valid ng-scope ace_editor ace-tm"/>-->
+    <!--</div>-->
   
-  </div>
+</div>
   

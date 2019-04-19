@@ -1,6 +1,8 @@
 const Mustache = require('mustache');
 const Plotly = require('plotly.js');
 
+import plotTemplate from './plotly_chart.html';
+
 class VisController {
 
   constructor(el, vis) {
@@ -34,9 +36,28 @@ class VisController {
         return;
       }
 
-      this.container.innerHTML = '';
+      this.container.innerHTML = plotTemplate;
+      this.plotChart = document.getElementById('plotChart');
+      this.plotBtn = document.getElementById('plotBtn');
+      this.table = document.getElementById('table');
+      this.plotBtn.hidden = true;
 
-      Plotly.newPlot(this.container, visData.chart.data, visData.chart.layout);
+      Plotly.newPlot(this.plotChart, visData.chart.data, visData.chart.layout);
+
+      if(visData.table && visData.table.csv) {
+        this.plotBtn.hidden = false;
+        this.plotBtn.onclick = function(){
+          let fileName = dateFtt("yyyyMMddhhmmss",new Date()) + ".csv";
+          let content = visData.table.csv;
+          let a = document.createElement('a');
+          let url = window.URL.createObjectURL(new Blob([content],
+              { type: "text/plain" + ";charset=" + 'utf-8' }));
+          a.href = url;
+          a.download = fileName;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        };
+      }
 
       resolve('done rendering');
     });
@@ -46,7 +67,27 @@ class VisController {
     this.el.innerHTML = '';
   }
 
-};
+}
+
+
+function dateFtt(fmt,date)
+{ //author: meizz
+  var o = {
+    "M+" : date.getMonth()+1,                    // 月份
+    "d+" : date.getDate(),                       // 日
+    "h+" : date.getHours(),                      // 小时
+    "m+" : date.getMinutes(),                    // 分
+    "s+" : date.getSeconds(),                    // 秒
+    "q+" : Math.floor((date.getMonth()+3)/3), // 季度
+    "S"  : date.getMilliseconds()                // 毫秒
+  };
+  if(/(y+)/.test(fmt))
+    fmt=fmt.replace(RegExp.$1, (date.getFullYear()+"").substr(4 - RegExp.$1.length));
+  for(var k in o)
+    if(new RegExp("("+ k +")").test(fmt))
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+  return fmt;
+}
 
 export { VisController };
 

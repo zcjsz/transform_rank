@@ -1,5 +1,3 @@
-import './transform_vis.less';
-
 import { uiModules } from 'ui/modules';
 import { VisController } from './vis_controller';
 import { CATEGORY } from 'ui/vis/vis_category';
@@ -8,16 +6,15 @@ import { VisTypesRegistryProvider } from 'ui/registry/vis_types';
 import { VisSchemasProvider } from 'ui/vis/editors/default/schemas';
 import { createRequestHandler } from './request_handler';
 import { createResponseHandler } from './response_handler';
-import ReactComponent from './ReactComponent';
 
+import 'plugins/transform_rank/editor_controller';
 import optionsTemplate from './options_template.html';
-import 'plugins/transform_vis/editor_controller';
-  
-function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
-  console.log('******* TransformVisProvider *******');
+import './options_template.css';
 
-  let querydsl1 = {"size":999,"_source":["Lot","Oper","Tprog","Yield"],"query":{"bool":{"filter":[{"range":{"Date":{"gte":"2018-01-01","lte":"2019-02-01"}}},{"terms":{"Oper": [6820,6824,7903]}}]}}};
-  let querydsl2 = {"size":999,"_source":["LotNumber","Operation","kdfFirstYield"],"query":{"bool":{"filter":[{"range":{"LotStartTime":{"gte":"2018-01-01","lte":"2019-02-01"}}},{"terms":{"Operation":["FT","FT2","FT-FUSE"]}},{"term":{"IsCaled":"Y"}}]}}};
+function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
+
+  let querydsl1 = {"_source":["WaferLot", "WaferNumber"],"query":{"bool":{"filter":[{"range":{"FileTime":{"gte":"2018-10-01","lte":"2018-10-01"}}},{"terms":{"Type": ["Unit"]}}]}}};
+  let querydsl2 = {"_source":["LotNumber","Operation","kdfFirstYield"],"query":{"bool":{"filter":[{"range":{"LotStartTime":{"gte":"2018-01-01","lte":"2019-02-01"}}},{"terms":{"Operation":["FT","FT2","FT-FUSE"]}},{"term":{"IsCaled":"Y"}}]}}};
 
   let metadata = {
     "query_config": {
@@ -58,7 +55,7 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
         ]
       },
       "table": {
-        "rowdata": [
+        "headers": [
           "q1.Operation",
           "q1.Tprog",
           "q1.Lot",
@@ -89,11 +86,10 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
 
   const VisFactory = Private(VisFactoryProvider);
 
-  // return VisFactory.createReactVisualization({
   return VisFactory.createBaseVisualization({
-    name: 'transform',
-    title: 'Transform',
-    description: 'Transfom query results to custom HTML using template language',
+    name: 'transform rank',
+    title: 'Transform Rank',
+    description: 'Transfom query results by unit rank',
     icon: 'fa-exchange',
     category: CATEGORY.OTHER,
     visualization: VisController,
@@ -112,7 +108,10 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
     requestHandler: createRequestHandler(Private, es, indexPatterns, $sanitize),
     responseHandler: createResponseHandler(Private, es, indexPatterns, $sanitize),
     options: {
-      showIndexSelection: false
+      showIndexSelection: false,
+      showFilterBar: false,
+      showQueryBar: false,
+      showTimePicker: false
     }
   });
 }
