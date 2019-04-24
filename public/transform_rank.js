@@ -13,75 +13,24 @@ import './options_template.css';
 
 function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
 
-  let querydsl1 = {"_source":["WaferLot", "WaferNumber"],"query":{"bool":{"filter":[{"range":{"FileTime":{"gte":"2018-10-01","lte":"2018-10-01"}}},{"terms":{"Type": ["Unit"]}}]}}};
-  let querydsl2 = {"_source":["LotNumber","Operation","kdfFirstYield"],"query":{"bool":{"filter":[{"range":{"LotStartTime":{"gte":"2018-01-01","lte":"2019-02-01"}}},{"terms":{"Operation":["FT","FT2","FT-FUSE"]}},{"term":{"IsCaled":"Y"}}]}}};
+  const querydsl = {"_source":["LotNumber","Operation","UnitId","StartTestTime","context","value"],"query":{"bool":{"filter":[{"range":{"FileTime":{"gte":"2019-01-01","lte":"2019-04-23"}}},{"term":{"LotNumber":"HG00390"}},{"term":{"Operation":"FT"}},{"term":{"Type":"PinMeasure"}},{"term":{"Pin":"D0_PA0_TXP0"}},{"terms":{"context":["pcie_static_ifvm_5mA_drive0_Vmin","pcie_static_ifvm_0mA_drive0_Vmin"]}}]}}};
 
-  let metadata = {
-    "query_config": {
-      "q1": {
-        "fields": [
-          "Lot",
-          "Oper",
-          "Tprog",
-          "Yield"
-        ],
-        "alias": {
-          "Oper": {
-            "name": "Operation",
-            "new": true,
-            "data": {
-              "6820": "FT",
-              "6824": "FT2",
-              "6905": "SLT",
-              "6911": "CESLT",
-              "7903": "FT-FUSE"
-            }
-          }
-        },
-        "join": [
-          "Lot",
-          "Operation"
-        ]
-      },
-      "q2": {
-        "fields": [
-          "LotNumber",
-          "Operation",
-          "kdfFirstYield"
-        ],
-        "join": [
-          "LotNumber",
-          "Operation"
-        ]
-      },
-      "table": {
-        "headers": [
-          "q1.Operation",
-          "q1.Tprog",
-          "q1.Lot",
-          "q1.Yield",
-          "q2.kdfFirstYield"
-        ]
-      },
-      "chart": {
-        "type": "scatter",
-        "title": "Final Yield vs First Yield",
-        "axis": {
-          "x": {
-            "expr": "q1.Yield",
-            "title": "Final Yield"
-          },
-          "y": {
-            "expr": "q2.kdfFirstYield * 100",
-            "title": "First Yield"
-          }
-        },
-        "group": [
-          "q1.Operation",
-          "q1.Tprog"
-        ]
-      }
+  const dataConfigDefault = {
+    "flatten": {
+      "context": "value"
     }
+  };
+
+  const outputConfigDefault = {
+    "columns" : [
+      { "Lot Number"      : { "source" : "LotNumber" } },
+      { "Operation"       : { "source" : "Operation" } },
+      { "Unit ID"         : { "source" : "UnitID" } },
+      { "Rank"            : { "source" : "Rank" } },
+      { "StartTestTime"   : { "source" : "StartTestTime"} },
+      { "5mA_drive0_Vmin" : { "source" : "pcie_static_ifvm_5mA_drive0_Vmin"} },
+      { "0mA_drive0_Vmin" : { "source" : "pcie_static_ifvm_0mA_drive0_Vmin"} },
+    ]
   };
 
   const VisFactory = Private(VisFactoryProvider);
@@ -95,11 +44,18 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
     visualization: VisController,
     visConfig: {
       defaults: {
-        meta: JSON.stringify(metadata,null,2),
-        querydsl1: JSON.stringify(querydsl1,null, 2),
-        querydsl2: JSON.stringify(querydsl2,null, 2),
-        formula: '<hr>{{responses_0.hits.total}} total hits<hr>\n' +
-                 '<hr>{{responses_1.hits.total}} total hits<hr>'
+        querydslPrev: JSON.stringify(querydsl,null, 2),
+        querydslNext: JSON.stringify(querydsl,null, 2),
+        indexpatternPrev: '',
+        indexpatternNext: '',
+        OutputConfig: {
+          Prev: JSON.stringify(outputConfigDefault,null,2),
+          Next: JSON.stringify(outputConfigDefault,null,2),
+        },
+        DataConfig: {
+          Prev: JSON.stringify(dataConfigDefault, null, 2),
+          Next: JSON.stringify(dataConfigDefault, null, 2),
+        }
       },
     },
     editorConfig: {

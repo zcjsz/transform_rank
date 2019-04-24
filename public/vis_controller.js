@@ -6,7 +6,7 @@ import plotTemplate from './plotly_chart.html';
 class VisController {
 
   constructor(el, vis) {
-    console.log('@@@@@@ TransformVis Constructor @@@@@@');
+    console.log('@@@@@@ TransformVis VisController @@@@@@');
     this.vis = vis;
     this.el = el;
     this.container = document.createElement('div');

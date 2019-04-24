@@ -1,58 +1,58 @@
-import chrome from 'ui/chrome';
 import { dashboardContextProvider } from 'plugins/kibana/dashboard/dashboard_context';
 import axios from 'axios';
 import localforage from 'localforage';
 
-// const Mustache = require('mustache');
-// const elasticsearch = require('elasticsearch-browser/elasticsearch');
-// const sizeof = require('object-sizeof');
-
 export const createRequestHandler = function(Private, es, indexPatterns, $sanitize) {
+
+  console.log('@@@@@@ createRequestHandler @@@@@@');
 
     const myRequestHandler = (vis, state) => {
 
-      // console.log('@@@@@@ myRequestHandler ES @@@@@@', es);
-      // var { appState, uiState, query, filters, timeRange, searchSource } = state;
+      console.log('@@@@@@ myRequestHandler @@@@@@');
+      window.onbeforeunload = function() {
+        deleteLocalforage();
+      };
 
       const handleRequest = async () => {
 
         try {
 
-          await deleteLocalforage();
+          const querySetting = await getQuerySetting(vis, indexPatterns);
+          console.log('===== query setting =====', querySetting);
 
-          const config = getConfig(vis);
-          console.log('===== config =====', config);
+          const query = queryPreHandler(querySetting);
+          console.log('===== query handler =====', query);
 
-          const params = await getQuery(vis, indexPatterns);
-          console.log('===== params =====', params);
+          const dataConfig = getDataConfig(vis);
+          console.log('===== data config =====', dataConfig);
 
-          const query = queryHandler(params);
-          console.log('==== query ====', query);
-
+          const outputConfig = getOutputConfig(vis);
+          console.log('===== output config =====', outputConfig);
 
           const statTime = new Date();
 
+          if(query.isChanged === true) {
 
-          let result = {};
+            await deleteLocalforage();
 
-          if(query.type === "raw") {
-            const res = await scrollSearch(query);
-            console.log('===== res =====', res);
-            // result.type = "raw";
-          } else if (query.type === "aggs") {
-            result.aggs = await search(query);
-            result.type = "aggs";
-          } else {
-            result = null;
+            let result = {};
+
+            if(query.type === "raw") {
+              const res = await scrollSearch(query);
+              // result.type = "raw";
+            } else if (query.type === "aggs") {
+              result.aggs = await search(query);
+              result.type = "aggs";
+            } else {
+              result = null;
+            }
+
+            const totalCnt = await processAndStoreLotsData(dataConfig.body);
+            console.log(totalCnt);
+
           }
 
-
-          const totalCnt = await sortAndStoreLotsData();
-          console.log(totalCnt);
-
-          console.log(new Date() - statTime);
-
-          await deleteLocalforage();
+          console.log('used time: ', (new Date() - statTime));
 
           return({
             result: 'result',
@@ -79,7 +79,6 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
       });
 
 
-
     };
   
     return myRequestHandler;
@@ -98,45 +97,46 @@ const display_error = (message) => {
 };
 
 
-const getConfig = (vis) => {
-  console.log('===== getConfig =====');
-  try {
-    let metadata = JSON.parse(vis.params.meta);
-    let query_config = metadata.query_config ? metadata.query_config : null;
-    return({
-      config: query_config,
-    });
-  } catch (jserr) {
-    throw new Error("Meta Data Error (See Console): <br\>" + jserr);
-  }
-};
-
-
-const getQuery = async (vis, indexPatterns) => {
+const getQuerySetting = async (vis, indexPatterns) => {
   let index = null;
   let body = null;
-  let validQuery1 = false;
-  if(vis.params.indexpattern1 && vis.params.querydsl1 && vis.params.querydsl1.includes("query")) {
-    validQuery1 = true;
-    const indexPattern = await indexPatterns.get(vis.params.indexpattern1).then((indexPattern) => { return indexPattern;});
+  let validQuery = false;
+  let isChanged = false;
+
+  if(vis.params.indexpatternNext !== vis.params.indexpatternPrev) {
+    vis.params.indexpatternPrev = vis.params.indexpatternNext;
+    isChanged = true;
+  }
+
+  if(vis.params.querydslNext !== vis.params.querydslPrev) {
+    vis.params.querydslPrev = vis.params.querydslNext;
+    isChanged = true;
+  }
+
+  if(vis.params.indexpatternNext && vis.params.querydslNext && vis.params.querydslNext.includes("query")) {
+    validQuery = true;
+    const indexPattern = await indexPatterns.get(vis.params.indexpatternNext).then((indexPattern) => { return indexPattern;});
+    console.log('##### indexPattern', indexPattern);
     index = indexPattern.title;
-    body = JSON.parse(vis.params.querydsl1);
+    body = JSON.parse(vis.params.querydslNext);
   } else {
     index = "_all";
     body = {"size":0,"query":{"bool":{"filter":{"term":{"_index":".kibana"}}}}};
   }
-  if(!validQuery1) {
+
+  if(!validQuery) {
     throw new Error ("Query Setting Error!!");
   } else {
     return {
       index: index,
       body: body,
+      isChanged: isChanged
     }
   }
 };
 
 
-const queryHandler = (query) => {
+const queryPreHandler = (query) => {
   let queryType = "raw";
   try {
     if(query.body["aggs"]) {
@@ -155,10 +155,34 @@ const queryHandler = (query) => {
 };
 
 
+const getDataConfig = (vis) => {
+  let isChanged = false;
+  if(vis.params.DataConfig.Next !== vis.params.DataConfig.Prev) {
+    vis.params.DataConfig.Prev = vis.params.DataConfig.Next;
+    isChanged = true;
+  }
+  return({
+    body: JSON.parse(vis.params.DataConfig.Next),
+    isChanged: isChanged
+  });
+};
+
+
+const getOutputConfig = (vis) => {
+  let isChanged = false;
+  if(vis.params.OutputConfig.Next !== vis.params.OutputConfig.Prev) {
+    vis.params.OutputConfig.Prev = vis.params.OutputConfig.Next;
+    isChanged = true;
+  }
+  return({
+    body: JSON.parse(vis.params.OutputConfig.Next),
+    isChanged: isChanged
+  });
+};
+
+
 const deleteLocalforage = () => {
   return new Promise(async (resolve, reject)=>{
-    // await localforage.clear();
-    // console.log('Database is now empty.');
     await localforage.dropInstance();
     console.log('Dropped the store of the current instance');
     const DBDeleteRequest = window.indexedDB.deleteDatabase("localforage");
@@ -295,14 +319,14 @@ const dataStore = async (lotSets) => {
       console.log(err);
     });
   }
-  if(await checkLocalforageStatus(lotStoreStatus) === 'done') {
+  if(await isLocalforageDone(lotStoreStatus) === 'done') {
     return 'done';
   }
 };
 
 
-const sortAndStoreLotsData = async () => {
-  console.log('###### sort and store lots data ######');
+const processAndStoreLotsData = async (dataConfig) => {
+  console.log('###### process and store lots data ######');
   const lotKeys = await localforage.keys();
   let totalCnt = 0;
   const lotStoreStatus = {};
@@ -311,8 +335,20 @@ const sortAndStoreLotsData = async () => {
     const lotKey = lotKeys[i];
     lotStoreStatus[lotKey] = 'start';
     const dataSet = await localforage.getItem(lotKey);
-    const sortedDataSet = _.groupBy(_.sortBy(dataSet, ['UnitId', 'StartTestTime']), 'UnitId');
-    localforage.setItem(lotKey, sortedDataSet).then((unitSets)=>{
+
+    const unitSets = _.groupBy(dataSet, (obj)=>{
+      return obj['UnitId'] + '@$' + obj['StartTestTime']
+    });
+    const unitTimeKeys = Object.keys(unitSets).sort();
+    const lotUnits = {};
+    unitTimeKeys.map((key)=>{
+      const unitID = key.split('@$')[0];
+      if(!lotUnits[unitID]) lotUnits[unitID] = [];
+      lotUnits[unitID].push(dataFlattern(unitSets[key], dataConfig));
+    });
+    console.log(lotUnits);
+
+    localforage.setItem(lotKey, lotUnits).then((unitSets)=>{
       for(let unit in unitSets) {
         totalCnt += unitSets[unit].length;
       }
@@ -321,13 +357,53 @@ const sortAndStoreLotsData = async () => {
       console.log(err);
     });
   }
-  if(await checkLocalforageStatus(lotStoreStatus) === 'done') {
+  if(await isLocalforageDone(lotStoreStatus) === 'done') {
     return totalCnt;
   }
 };
 
 
-const checkLocalforageStatus = (lotStoreStatus) => {
+const dataFlattern = (data, dataConfig) => {
+  if(dataConfig.flatten) {
+    const flatten = dataConfig.flatten;
+    for(let i in data) {
+      for(let j in flatten) {
+        const key = data[i][j];
+        const val = data[i][flatten[j]];
+        data[i][key] = val;
+        delete data[i][j];
+        delete data[i][flatten[j]];
+      }
+    }
+    let obj = null;
+    if(data.length > 1) {
+      obj = data[0];
+      for(let i=1; i<data.length; i++) {
+        for(let k in data[i]) {
+          if(!obj[k]) {
+            obj[k] = data[i][k];
+          } else {
+            if(obj[k] !== data[i][k]) {
+              const tmp = Array.isArray(obj[k]) ? [...obj[k], data[i][k]] : [obj[k], data[i][k]];
+              obj[k] = tmp;
+            }
+          }
+        }
+      }
+    } else {
+      obj = data;
+    }
+    return obj;
+  } else {
+    return data;
+  }
+};
+
+
+
+
+
+const isLocalforageDone = (lotStoreStatus) => {
   return new Promise((resolve, reject) => {
     const intervalFlag = setInterval(()=>{
       console.log('###### check localforage status ######');
@@ -339,7 +415,6 @@ const checkLocalforageStatus = (lotStoreStatus) => {
         }
       }
       if(allStoreDone === true) {
-        console.log('===== lotStoreStatus =====',lotStoreStatus);
         clearInterval(intervalFlag);
         console.log('###### localforage done ######');
         resolve('done')

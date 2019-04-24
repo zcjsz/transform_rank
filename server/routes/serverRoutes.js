@@ -26,7 +26,7 @@ export default function (server, client) {
       client.search({
         sort: ["_doc"],
         scroll: '1m',
-        size: request.payload.body.size,
+        size: request.payload.body.size ? request.payload.body.size : 10000,
         index: request.payload.index,
         body: request.payload.body,
       })

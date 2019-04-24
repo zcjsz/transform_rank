@@ -121,7 +121,7 @@ const client = elasticsearch.Client({
 
 {
   "_source": [
-    "LotNumber",
+    "WaferLot",
     "Operation",
     "UnitId",
     "StartTestTime"
@@ -133,14 +133,29 @@ const client = elasticsearch.Client({
         {
           "range": {
             "FileTime": {
-              "gte": "2018-10-01",
-              "lte": "2019-01-01"
+              "gte": "2018-01-01",
+              "lte": "2019-04-01"
             }
           }
         },
         {
           "term": {
-            "Type": "Unit"
+            "WaferLot": "H8018.00"
+          }
+        },
+        {
+          "term": {
+            "Operation": "WS1"
+          }
+        },
+        {
+          "term": {
+            "Type": "PinMeasure"
+          }
+        },
+        {
+          "terms": {
+            "context": ["pcie_static_ifvm_5mA_drive0_Vmin", "pcie_static_ifvm_0mA_drive0_Vmin"]
           }
         }
       ]
