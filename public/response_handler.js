@@ -1,12 +1,13 @@
 const ExpCalc = require('../utils/ExpCalc');
 const REG_NUMBER = /^(\+|-)?[0-9]+\.?[0-9]*$/;
-const sizeof = require('object-sizeof');
 
 export const createResponseHandler = function(Private, es, indexPatterns, $sanitize) {
 
+  console.log('@@@@@@ createResponseHandler @@@@@@');
+
   const myResponseHandler = (vis, resp) => {
 
-    console.log('@@@@@@ myResponseHandler @@@@@@', resp, sizeof(resp.result.hits)/1000000);
+    console.log('@@@@@@ myResponseHandler @@@@@@');
 
     const display_error = (message) => {
       return `<div style="color:red"><i>${message}</i></div>`;

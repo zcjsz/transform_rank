@@ -13,12 +13,14 @@ import './options_template.css';
 
 function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
 
+  console.log('@@@@@@ TransformVisProvider @@@@@@');
+
   const querydsl = {"_source":["LotNumber","Operation","UnitId","StartTestTime","context","value"],"query":{"bool":{"filter":[{"range":{"FileTime":{"gte":"2019-01-01","lte":"2019-04-23"}}},{"term":{"LotNumber":"HG00390"}},{"term":{"Operation":"FT"}},{"term":{"Type":"PinMeasure"}},{"term":{"Pin":"D0_PA0_TXP0"}},{"terms":{"context":["pcie_static_ifvm_5mA_drive0_Vmin","pcie_static_ifvm_0mA_drive0_Vmin"]}}]}}};
 
   const dataConfigDefault = {
-    "flatten": {
-      "context": "value"
-    }
+    "groupBy":  ["UnitId"],
+    "sortBy" :  ["StartTestTime"],
+    "flatten":  [["context", "value"]]
   };
 
   const outputConfigDefault = {
@@ -44,10 +46,14 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
     visualization: VisController,
     visConfig: {
       defaults: {
-        querydslPrev: JSON.stringify(querydsl,null, 2),
-        querydslNext: JSON.stringify(querydsl,null, 2),
-        indexpatternPrev: '',
-        indexpatternNext: '',
+        IndexPattern: {
+          Prev: '',
+          Next: '',
+        },
+        QueryDSL: {
+          Prev: JSON.stringify(querydsl,null, 2),
+          Next: JSON.stringify(querydsl,null, 2),
+        },
         OutputConfig: {
           Prev: JSON.stringify(outputConfigDefault,null,2),
           Next: JSON.stringify(outputConfigDefault,null,2),

@@ -6,12 +6,24 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
 
   console.log('@@@@@@ createRequestHandler @@@@@@');
 
+  window.onbeforeunload = function() {
+    deleteDBStore("localforage");
+    deleteDBStore("rawDataStore");
+    deleteDBStore("cfgDataStore");
+  };
+
+  let flag = true;
+  let rawDataStore, cfgDataStore;
+
     const myRequestHandler = (vis, state) => {
 
       console.log('@@@@@@ myRequestHandler @@@@@@');
-      window.onbeforeunload = function() {
-        deleteLocalforage();
-      };
+
+      if(flag) {
+        vis.params.IndexPattern.Next = '';
+        vis.updateState();
+      }
+      flag = false;
 
       const handleRequest = async () => {
 
@@ -31,32 +43,33 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
 
           const statTime = new Date();
 
-          if(query.isChanged === true) {
+          if(query.isChanged) {
+            await deleteDBStore("rawDataStore");
+            await deleteDBStore("cfgDataStore");
+            rawDataStore = localforage.createInstance({name: 'rawDataStore'});
+            cfgDataStore = localforage.createInstance({name: 'cfgDataStore'});
+          }
 
-            await deleteLocalforage();
-
-            let result = {};
-
+          if(query.isChanged) {
             if(query.type === "raw") {
-              const res = await scrollSearch(query);
-              // result.type = "raw";
+              await scrollSearch(query, rawDataStore);
             } else if (query.type === "aggs") {
-              result.aggs = await search(query);
-              result.type = "aggs";
+              await search(query);
             } else {
-              result = null;
+              console.log('query setting is not changed');
             }
+          }
 
-            const totalCnt = await processAndStoreLotsData(dataConfig.body);
+          if(query.isChanged || dataConfig.isChanged){
+            const totalCnt = await processAndStoreLotsData(dataConfig.body, rawDataStore, cfgDataStore);
             console.log(totalCnt);
-
           }
 
           console.log('used time: ', (new Date() - statTime));
 
           return({
-            result: 'result',
-            config: 'config'
+            result: {hits:[]},
+            config: 'config',
           })
 
         } catch(err) {
@@ -103,22 +116,22 @@ const getQuerySetting = async (vis, indexPatterns) => {
   let validQuery = false;
   let isChanged = false;
 
-  if(vis.params.indexpatternNext !== vis.params.indexpatternPrev) {
-    vis.params.indexpatternPrev = vis.params.indexpatternNext;
+  if(vis.params.IndexPattern.Next !== vis.params.IndexPattern.Prev) {
+    vis.params.IndexPattern.Prev = vis.params.IndexPattern.Next;
     isChanged = true;
   }
 
-  if(vis.params.querydslNext !== vis.params.querydslPrev) {
-    vis.params.querydslPrev = vis.params.querydslNext;
+  if(vis.params.QueryDSL.Next !== vis.params.QueryDSL.Prev) {
+    vis.params.QueryDSL.Prev = vis.params.QueryDSL.Next;
     isChanged = true;
   }
 
-  if(vis.params.indexpatternNext && vis.params.querydslNext && vis.params.querydslNext.includes("query")) {
+  if(vis.params.IndexPattern.Next && vis.params.QueryDSL.Next && vis.params.QueryDSL.Next.includes("query")) {
     validQuery = true;
-    const indexPattern = await indexPatterns.get(vis.params.indexpatternNext).then((indexPattern) => { return indexPattern;});
+    const indexPattern = await indexPatterns.get(vis.params.IndexPattern.Next).then((indexPattern) => { return indexPattern;});
     console.log('##### indexPattern', indexPattern);
     index = indexPattern.title;
-    body = JSON.parse(vis.params.querydslNext);
+    body = JSON.parse(vis.params.QueryDSL.Next);
   } else {
     index = "_all";
     body = {"size":0,"query":{"bool":{"filter":{"term":{"_index":".kibana"}}}}};
@@ -181,18 +194,18 @@ const getOutputConfig = (vis) => {
 };
 
 
-const deleteLocalforage = () => {
+const deleteDBStore = (instanceName) => {
   return new Promise(async (resolve, reject)=>{
-    await localforage.dropInstance();
-    console.log('Dropped the store of the current instance');
-    const DBDeleteRequest = window.indexedDB.deleteDatabase("localforage");
+    await localforage.dropInstance({name:instanceName});
+    console.log('Dropped the store of the instance: ' + instanceName);
+    const DBDeleteRequest = window.indexedDB.deleteDatabase(instanceName);
     DBDeleteRequest.onerror = function(event) {
-      console.log("Error deleting database localforage.");
-      reject("Error deleting database localforage.")
+      console.log("Error deleting database: " + instanceName);
+      reject("Error deleting database: " + instanceName)
     };
     DBDeleteRequest.onsuccess = function(event) {
-      console.log("Database localforage deleted successfully");
-      resolve("Database localforage deleted successfully");
+      console.log("Database deleted successfully: " + instanceName);
+      resolve("Database deleted successfully: " + instanceName);
     };
   });
 };
@@ -221,7 +234,7 @@ const search = async (query) => {
 };
 
 
-const scrollSearch = async (query) => {
+const scrollSearch = async (query, rawDataStore) => {
 
   let response = await axios({
     method: 'post',
@@ -267,7 +280,7 @@ const scrollSearch = async (query) => {
       if(hitsPcks.length > 0) {
         const lotSets = hitsHandler(hitsPcks);
         hitsPcks = [];
-        await dataStore(lotSets);
+        await dataStore(lotSets, rawDataStore);
       }
       break;
     } else {
@@ -277,7 +290,7 @@ const scrollSearch = async (query) => {
       if(hitsPcks.length >= 10) {
         const lotSets = hitsHandler(hitsPcks);
         hitsPcks = [];
-        await dataStore(lotSets);
+        await dataStore(lotSets, rawDataStore);
       }
     }
   }
@@ -305,14 +318,14 @@ const hitsHandler = (hitsPcks) => {
 };
 
 
-const dataStore = async (lotSets) => {
+const dataStore = async (lotSets, rawDataStore) => {
   console.log('###### data store ######');
   const lotStoreStatus = {};
   for(let key in lotSets) {
     lotStoreStatus[key] = 'start';
-    localforage.getItem(key).then((dataSet)=>{
+    rawDataStore.getItem(key).then((dataSet)=>{
       const newDataSet = dataSet ? dataSet.concat(lotSets[key]) : [].concat(lotSets[key]);
-      localforage.setItem(key, newDataSet).then((data)=>{
+      rawDataStore.setItem(key, newDataSet).then((data)=>{
         lotStoreStatus[key] = 'done';
       })
     }).catch((err)=>{
@@ -325,30 +338,34 @@ const dataStore = async (lotSets) => {
 };
 
 
-const processAndStoreLotsData = async (dataConfig) => {
+const processAndStoreLotsData = async (dataConfig, rawDataStore, cfgDataStore) => {
   console.log('###### process and store lots data ######');
-  const lotKeys = await localforage.keys();
+  const lotKeys = await rawDataStore.keys();
   let totalCnt = 0;
   const lotStoreStatus = {};
 
   for(let i in lotKeys) {
     const lotKey = lotKeys[i];
     lotStoreStatus[lotKey] = 'start';
-    const dataSet = await localforage.getItem(lotKey);
+    const dataSet = await rawDataStore.getItem(lotKey);
+    console.log('###### rawDataStore dataSet ######', dataSet);
+    dataGroupSortFlatten(_.cloneDeep(dataSet), dataConfig);
+    const {sets, keys} = dataGroupAndSort(_.cloneDeep(dataSet), dataConfig);
+    console.log('###### rawDataStore sets ######', sets);
+    let lotUnits = {};
+    if(keys.length > 0) {
+      keys.map((key)=>{
+        const unitID = key.split('@$')[0];
+        if(!lotUnits[unitID]) lotUnits[unitID] = [];
+        lotUnits[unitID].push(dataFlattern(sets[key], dataConfig));
+      });
+    } else {
+      lotUnits = sets;
+    }
 
-    const unitSets = _.groupBy(dataSet, (obj)=>{
-      return obj['UnitId'] + '@$' + obj['StartTestTime']
-    });
-    const unitTimeKeys = Object.keys(unitSets).sort();
-    const lotUnits = {};
-    unitTimeKeys.map((key)=>{
-      const unitID = key.split('@$')[0];
-      if(!lotUnits[unitID]) lotUnits[unitID] = [];
-      lotUnits[unitID].push(dataFlattern(unitSets[key], dataConfig));
-    });
     console.log(lotUnits);
-
-    localforage.setItem(lotKey, lotUnits).then((unitSets)=>{
+    lotUnits = dataSet;
+    cfgDataStore.setItem(lotKey, lotUnits).then((unitSets)=>{
       for(let unit in unitSets) {
         totalCnt += unitSets[unit].length;
       }
@@ -363,16 +380,81 @@ const processAndStoreLotsData = async (dataConfig) => {
 };
 
 
+const dataGroupAndSort = (data, dataConfig) => {
+  let groupSortSets = {}, keys = [];
+  if(dataConfig.group_and_sort && dataConfig.group_and_sort.length > 0) {
+    console.log('###### data group and sort ######');
+    const groupSortList = dataConfig.group_and_sort;
+    groupSortSets = _.groupBy(data, (obj)=>{
+      const objGroupSortList = groupSortList.map((item)=>{
+        return obj[item];
+      });
+      return objGroupSortList.join('@$');
+    });
+    keys = Object.keys(groupSortSets).sort();
+    return {
+      sets: groupSortSets,
+      keys: keys
+    }
+  } else {
+    return {
+      sets: data,
+      keys: []
+    }
+  }
+};
+
+
+const dataGroupSortFlatten = (data, dataConfig) => {
+  const { groupBy, sortBy } = dataConfig;
+  const groupFlag = (groupBy && Array.isArray(groupBy) && (groupBy.length > 0));
+  const sortFlag = (sortBy && Array.isArray(sortBy) && (sortBy.length > 0));
+  const groupSets = _.groupBy(data, (o)=>{
+    const groupTag = groupFlag ? groupBy.map((item)=>{return o[item]}).join('@@') : '';
+    const sortTag = sortFlag ? sortBy.map((item)=>{return o[item]}).join('$$') : '';
+    return groupTag.length > 0 ? groupTag + '@$' + sortTag : sortTag;
+  });
+  const sortedKeys = Object.keys(groupSets).sort();
+  const groupedAndSortedSets = {};
+  sortedKeys.map((key)=>{
+    const groupTag = key.split('@$')[0];
+    if(!groupedAndSortedSets[groupTag]) groupedAndSortedSets[groupTag] = [];
+    groupedAndSortedSets[groupTag].push(groupSets[key]);
+  });
+  _.map(groupedAndSortedSets, (val, key)=>{
+    let obj = {};
+    if(Array.isArray(val)) {
+      if(val.length === 0) {
+        obj = {};
+      } else if(val.length === 1) {
+        obj = {'FL': dataFlattern(val[0], dataConfig)}
+      } else if(val.length > 1) {
+        for(let i=0; i<val.length; i++) {
+          if(i < val.length-1) {
+            obj[(i+1).toString()] = dataFlattern(val[i], dataConfig);
+          } else {
+            obj['L'] = dataFlattern(val[i], dataConfig);
+          }
+        }
+      }
+    }
+    groupedAndSortedSets[key] = obj;
+  });
+  console.log('====== dataGroupAndSort2 ======', groupedAndSortedSets);
+  console.log(JSON);
+};
+
+
 const dataFlattern = (data, dataConfig) => {
-  if(dataConfig.flatten) {
+  if(dataConfig.flatten && dataConfig.flatten.length > 0) {
     const flatten = dataConfig.flatten;
     for(let i in data) {
       for(let j in flatten) {
-        const key = data[i][j];
-        const val = data[i][flatten[j]];
+        const key = data[i][flatten[j][0]];
+        const val = data[i][flatten[j][1]];
         data[i][key] = val;
-        delete data[i][j];
-        delete data[i][flatten[j]];
+        delete data[i][flatten[j][0]];
+        delete data[i][flatten[j][1]];
       }
     }
     let obj = null;
@@ -398,9 +480,6 @@ const dataFlattern = (data, dataConfig) => {
     return data;
   }
 };
-
-
-
 
 
 const isLocalforageDone = (lotStoreStatus) => {

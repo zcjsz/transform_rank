@@ -17,6 +17,7 @@ module.controller('TransformVisEditorController', function ($scope, Private, ind
         perPage: 10000
     }).then(response => {    
         $scope.indexPatternOptions = response.savedObjects;
+        console.log('****** editor_controller ******', $scope);
     });
 
     console.log('****** plotly_controller ******');
