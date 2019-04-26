@@ -457,6 +457,7 @@ const dataFlattern = (data, dataConfig) => {
         delete data[i][flatten[j][1]];
       }
     }
+    // merge grouped data
     let obj = null;
     if(data.length > 1) {
       obj = data[0];
