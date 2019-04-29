@@ -61,8 +61,7 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
           }
 
           if(query.isChanged || dataConfig.isChanged){
-            const totalCnt = await processAndStoreLotsData(dataConfig.body, rawDataStore, cfgDataStore);
-            console.log(totalCnt);
+            await processAndStoreLotsData(dataConfig.body, rawDataStore, cfgDataStore);
           }
 
           console.log('used time: ', (new Date() - statTime));
@@ -90,7 +89,6 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
           })
         });
       });
-
 
     };
   
@@ -345,62 +343,25 @@ const processAndStoreLotsData = async (dataConfig, rawDataStore, cfgDataStore) =
   const lotStoreStatus = {};
 
   for(let i in lotKeys) {
+
     const lotKey = lotKeys[i];
     lotStoreStatus[lotKey] = 'start';
+
     const dataSet = await rawDataStore.getItem(lotKey);
     console.log('###### rawDataStore dataSet ######', dataSet);
-    dataGroupSortFlatten(_.cloneDeep(dataSet), dataConfig);
-    const {sets, keys} = dataGroupAndSort(_.cloneDeep(dataSet), dataConfig);
-    console.log('###### rawDataStore sets ######', sets);
-    let lotUnits = {};
-    if(keys.length > 0) {
-      keys.map((key)=>{
-        const unitID = key.split('@$')[0];
-        if(!lotUnits[unitID]) lotUnits[unitID] = [];
-        lotUnits[unitID].push(dataFlattern(sets[key], dataConfig));
-      });
-    } else {
-      lotUnits = sets;
-    }
 
-    console.log(lotUnits);
-    lotUnits = dataSet;
-    cfgDataStore.setItem(lotKey, lotUnits).then((unitSets)=>{
-      for(let unit in unitSets) {
-        totalCnt += unitSets[unit].length;
-      }
+    // dataGroupSortFlatten(_.cloneDeep(dataSet), dataConfig);
+    const groupedSortFlattenSets = dataGroupSortFlatten(_.cloneDeep(dataSet), dataConfig);
+    console.log('###### dataGroupSortFlatten sets ######', groupedSortFlattenSets);
+
+    cfgDataStore.setItem(lotKey, groupedSortFlattenSets).then((unitSets)=>{
       lotStoreStatus[lotKey] = 'done';
     }).catch((err)=>{
       console.log(err);
     });
   }
   if(await isLocalforageDone(lotStoreStatus) === 'done') {
-    return totalCnt;
-  }
-};
-
-
-const dataGroupAndSort = (data, dataConfig) => {
-  let groupSortSets = {}, keys = [];
-  if(dataConfig.group_and_sort && dataConfig.group_and_sort.length > 0) {
-    console.log('###### data group and sort ######');
-    const groupSortList = dataConfig.group_and_sort;
-    groupSortSets = _.groupBy(data, (obj)=>{
-      const objGroupSortList = groupSortList.map((item)=>{
-        return obj[item];
-      });
-      return objGroupSortList.join('@$');
-    });
-    keys = Object.keys(groupSortSets).sort();
-    return {
-      sets: groupSortSets,
-      keys: keys
-    }
-  } else {
-    return {
-      sets: data,
-      keys: []
-    }
+    return 'done';
   }
 };
 
@@ -415,13 +376,13 @@ const dataGroupSortFlatten = (data, dataConfig) => {
     return groupTag.length > 0 ? groupTag + '@$' + sortTag : sortTag;
   });
   const sortedKeys = Object.keys(groupSets).sort();
-  const groupedAndSortedSets = {};
+  const groupedSortFlattenSets = {};
   sortedKeys.map((key)=>{
     const groupTag = key.split('@$')[0];
-    if(!groupedAndSortedSets[groupTag]) groupedAndSortedSets[groupTag] = [];
-    groupedAndSortedSets[groupTag].push(groupSets[key]);
+    if(!groupedSortFlattenSets[groupTag]) groupedSortFlattenSets[groupTag] = [];
+    groupedSortFlattenSets[groupTag].push(groupSets[key]);
   });
-  _.map(groupedAndSortedSets, (val, key)=>{
+  _.map(groupedSortFlattenSets, (val, key)=>{
     let obj = {};
     if(Array.isArray(val)) {
       if(val.length === 0) {
@@ -438,10 +399,9 @@ const dataGroupSortFlatten = (data, dataConfig) => {
         }
       }
     }
-    groupedAndSortedSets[key] = obj;
+    groupedSortFlattenSets[key] = obj;
   });
-  console.log('====== dataGroupAndSort2 ======', groupedAndSortedSets);
-  console.log(JSON);
+  return groupedSortFlattenSets;
 };
 
 
