@@ -24,89 +24,79 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
   };
 
   const outputConfigDefault = {
-    "rank": ["F", "1"],
+    "rank": ["1"],
     "columns": [
       {
-        "Lot Number": {
-          "source": "LotNumber"
-        }
+        "name": "Lot Number",
+        "source": "LotNumber"
       },
       {
-        "Operation": {
-          "source": "Operation",
-        }
+        "name": "Operation",
+        "source": "Operation"
       },
       {
-        "Mfg Step": {
-          "source": "Operation",
-          "default": "Unknow",
-          "cond_value":[
-            {
-              "cond": "@source is '6260'",
-              "value": "FT"
-            },
-            {
-              "cond": "@source is '6278'",
-              "value": "FT2"
-            }
-          ]
-        }
-      },
-      {
-        "Unit ID": {
-          "source": "UnitId"
-        }
-      },
-      {
-        "StartTestTime": {
-          "source": "StartTestTime"
-        }
-      },
-      {
-        "5mA_drive0_Vmin": {
-          "source": "pcie_static_ifvm_5mA_drive0_Vmin"
-        }
-      },
-      {
-        "0mA_drive0_Vmin": {
-          "source": "pcie_static_ifvm_0mA_drive0_Vmin"
-        }
-      },
-      {
-        "New Col1": {
-          "value": 123
-        }
-      },
-      {
-        "New Col2": {
-          "source": {
-            "A": "pcie_static_ifvm_5mA_drive0_Vmin",
-            "B": "pcie_static_ifvm_0mA_drive0_Vmin"
+        "name": "Mfg Step",
+        "source": "Operation",
+        "default": "Unknow",
+        "cond_value": [
+          {
+            "cond": "@source is '6260'",
+            "value": "FT"
           },
-          "expr_value": "((@A + @B) / 2) * 100"
-        }
+          {
+            "cond": "@source is '6278'",
+            "value": "FT2"
+          }
+        ]
       },
       {
-        "New Col3": {
-          "source": {
-            "A": "LotNumber",
-            "B": "UnitId",
-            "C": "col['New Col2']"
+        "name": "Unit ID",
+        "source": "UnitId"
+      },
+      {
+        "name": "StartTestTime",
+        "source": "StartTestTime"
+      },
+      {
+        "name": "5mA_drive0_Vmin",
+        "source": "pcie_static_ifvm_5mA_drive0_Vmin"
+      },
+      {
+        "name": "0mA_drive0_Vmin",
+        "source": "pcie_static_ifvm_0mA_drive0_Vmin"
+      },
+      {
+        "name": "New Col1",
+        "value": "123"
+      },
+      {
+        "name": "New Col2",
+        "source": {
+          "A": "pcie_static_ifvm_5mA_drive0_Vmin",
+          "B": "pcie_static_ifvm_0mA_drive0_Vmin"
+        },
+        "expr_value": "((@A + @B) / 2) * 100"
+      },
+      {
+        "name": "New Col3",
+        "source": {
+          "A": "LotNumber",
+          "B": "UnitId",
+          "C": "col['New Col2']"
+        },
+        "cond_value": [
+          {
+            "cond": "(@A is 'HG00390') && (@B isOneOf [‘uid1’, 'uid2'])",
+            "value": "SS"
           },
-          "cond_value":[
-            {
-              "cond": "(@A is 'HG00390') && (@B isOneOf [‘uid1’, 'uid2'])",
-              "value": "SS"
-            },
-            {
-              "cond":"(@A isNot 'HG00390') || (@B isNotOneOf [‘uid1’, 'uid2'])",
-              "expr_value": "'SA - ' + @C"
-            }
-          ]
-        }
+          {
+            "cond": "(@A isNot 'HG00390') || (@B isNotOneOf [‘uid1’, 'uid2'])",
+            "expr_value": "'SA - ' + @C"
+          }
+        ]
       }
     ]
-  };
+  }
 
   const VisFactory = Private(VisFactoryProvider);
 

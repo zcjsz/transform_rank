@@ -10,10 +10,11 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
     deleteDBStore("localforage");
     deleteDBStore("rawDataStore");
     deleteDBStore("cfgDataStore");
+    deleteDBStore("outDataStore");
   };
 
   let flag = true;
-  let rawDataStore, cfgDataStore;
+  let rawDataStore, cfgDataStore, outDataStore;
 
     const myRequestHandler = (vis, state) => {
 
@@ -43,11 +44,16 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
 
           const statTime = new Date();
 
+          // query.isChanged = false;
+          // dataConfig.isChanged = false;
+
           if(query.isChanged) {
             await deleteDBStore("rawDataStore");
             await deleteDBStore("cfgDataStore");
+            await deleteDBStore("outDataStore");
             rawDataStore = localforage.createInstance({name: 'rawDataStore'});
             cfgDataStore = localforage.createInstance({name: 'cfgDataStore'});
+            outDataStore = localforage.createInstance({name: 'outDataStore'});
           }
 
           if(query.isChanged) {
@@ -61,8 +67,13 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
           }
 
           if(query.isChanged || dataConfig.isChanged){
-            await processAndStoreLotsData(dataConfig.body, rawDataStore, cfgDataStore);
+            await processAndStoreConfigData(dataConfig.body, rawDataStore, cfgDataStore);
           }
+
+          if(query.isChanged || outputConfig.isChanged) {
+            await processAndStoreOutputData(outputConfig, cfgDataStore, outDataStore);
+          }
+
 
           console.log('used time: ', (new Date() - statTime));
 
@@ -209,6 +220,10 @@ const deleteDBStore = (instanceName) => {
 };
 
 
+// ==========================================================================================
+//
+// ==========================================================================================
+
 const search = async (query) => {
   const response = await axios({
     method: 'post',
@@ -336,8 +351,33 @@ const dataStore = async (lotSets, rawDataStore) => {
 };
 
 
-const processAndStoreLotsData = async (dataConfig, rawDataStore, cfgDataStore) => {
-  console.log('###### process and store lots data ######');
+const isLocalforageDone = (lotStoreStatus) => {
+  return new Promise((resolve, reject) => {
+    const intervalFlag = setInterval(()=>{
+      console.log('###### check localforage status ######');
+      let allStoreDone = true;
+      for(const key in lotStoreStatus) {
+        if(lotStoreStatus[key] !== 'done') {
+          allStoreDone = false;
+          break;
+        }
+      }
+      if(allStoreDone === true) {
+        clearInterval(intervalFlag);
+        console.log('###### localforage done ######');
+        resolve('done')
+      }
+    },500);
+  })
+};
+
+
+// ==========================================================================================
+//
+// ==========================================================================================
+
+const processAndStoreConfigData = async (dataConfig, rawDataStore, cfgDataStore) => {
+  console.log('###### process and store config data ######');
   const lotKeys = await rawDataStore.keys();
   let totalCnt = 0;
   const lotStoreStatus = {};
@@ -388,13 +428,16 @@ const dataGroupSortFlatten = (data, dataConfig) => {
       if(val.length === 0) {
         obj = {};
       } else if(val.length === 1) {
-        obj = {'FL': dataFlattern(val[0], dataConfig)}
+        obj = {'FL': dataFlattern(val[0], dataConfig)};
+        obj['FL']['Rank'] = 'FL';
       } else if(val.length > 1) {
         for(let i=0; i<val.length; i++) {
           if(i < val.length-1) {
             obj[(i+1).toString()] = dataFlattern(val[i], dataConfig);
+            obj[(i+1).toString()]['Rank'] = (i+1).toString();
           } else {
             obj['L'] = dataFlattern(val[i], dataConfig);
+            obj['L']['Rank'] = 'L';
           }
         }
       }
@@ -443,22 +486,92 @@ const dataFlattern = (data, dataConfig) => {
 };
 
 
-const isLocalforageDone = (lotStoreStatus) => {
-  return new Promise((resolve, reject) => {
-    const intervalFlag = setInterval(()=>{
-      console.log('###### check localforage status ######');
-      let allStoreDone = true;
-      for(const key in lotStoreStatus) {
-        if(lotStoreStatus[key] !== 'done') {
-          allStoreDone = false;
-          break;
+//===================================================================================
+//===================================================================================
+
+const processAndStoreOutputData = async (outputConfig, cfgDataStore, outputDataStore) => {
+
+  console.log('###### process and store output data ######');
+
+  const rank = outputConfig.body.rank;
+  const rankAll = (rank && Array.isArray(rank) && rank.length > 0) ? false : true;
+
+  const columnConfList = getColumnConfig(outputConfig);
+
+  const lotKeys = await cfgDataStore.keys();
+
+  for(let i in lotKeys) {
+
+    const lotKey = lotKeys[i];
+    const unitsSet = await cfgDataStore.getItem(lotKey);
+    let rankUnitsSet = {};
+
+    if(rankAll) {
+      rankUnitsSet = unitsSet;
+    } else {
+      for(let unitID in unitsSet) {
+        const unitSet = unitsSet[unitID];
+        if(!rankUnitsSet[unitID]) rankUnitsSet[unitID] = {};
+        for(let i in rank) {
+          if(unitSet.hasOwnProperty(rank[i])) {
+            rankUnitsSet[unitID][[rank[i]]] = outputRowData(unitSet[rank[i]], columnConfList);
+          }
         }
       }
-      if(allStoreDone === true) {
-        clearInterval(intervalFlag);
-        console.log('###### localforage done ######');
-        resolve('done')
-      }
-    },500);
-  })
+    }
+
+  }
+};
+
+
+const getColumnConfig = (outputConfig) => {
+  const columns = outputConfig.body.columns;
+  const columnConfList = [];
+  for(let i in columns) {
+    const column = columns[i];
+    const colConf = {};
+    colConf['index'] = i;
+    colConf['name'] = column.name ? column.name : 'COL-' + i;
+    colConf['source'] = column.source ? column.source : null;
+    colConf['value'] = column.value ? column.value : null;
+    colConf['exprValue'] = column.expr_value ? column.expr_value : null;
+    colConf['condValue'] = column.cond_value ? column.cond_value : null;
+    colConf['default'] = column.default ? column.default : '';
+    columnConfList[i] = colConf;
+  }
+  return columnConfList;
+};
+
+
+const outputRowData = (rawData, columnConfList) => {
+  console.log(rawData);
+  const rowDataByIndex = [];
+  const rowDataByName = {};
+  for(let i in columnConfList) {
+    const colConf = columnConfList[i];
+    const cellValue = getCellValue(colConf, rawData, rowDataByName);
+    rowDataByIndex[colConf.index] = cellValue;
+    rowDataByName[colConf.name] = cellValue;
+  }
+  console.log('====== rowDataByIndex ======', rowDataByIndex);
+  return rowDataByIndex;
+};
+
+
+const getCellValue = (colConf, rawData, rowDataByName) => {
+
+  if(colConf.value) {
+    return colConf.value;
+  }
+
+  if(colConf.source && (typeof(colConf.source) === 'string')) {
+    return rawData[colConf.source];
+  }
+
+  if(colConf.exprValue) {
+    if(colConf.source)
+  }
+
+  return colConf.default;
+
 };
