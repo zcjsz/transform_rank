@@ -1,20 +1,21 @@
 import { dashboardContextProvider } from 'plugins/kibana/dashboard/dashboard_context';
 import axios from 'axios';
 import localforage from 'localforage';
+import ExprCalc from './ExprCalc';
 
 export const createRequestHandler = function(Private, es, indexPatterns, $sanitize) {
 
   console.log('@@@@@@ createRequestHandler @@@@@@');
 
-  window.onbeforeunload = function() {
-    deleteDBStore("localforage");
-    deleteDBStore("rawDataStore");
-    deleteDBStore("cfgDataStore");
-    deleteDBStore("outDataStore");
-  };
-
   let flag = true;
   let rawDataStore, cfgDataStore, outDataStore;
+
+  window.onbeforeunload = function() {
+    if(rawDataStore) rawDataStore.clear().then(()=>{deleteDBStore("rawDataStore", rawDataStore);});
+    if(cfgDataStore) cfgDataStore.clear().then(()=>{deleteDBStore("cfgDataStore", cfgDataStore);});
+    if(outDataStore) outDataStore.clear().then(()=>{deleteDBStore("outDataStore", outDataStore);});
+    deleteDBStore("localforage");
+  };
 
     const myRequestHandler = (vis, state) => {
 
@@ -48,12 +49,21 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
           // dataConfig.isChanged = false;
 
           if(query.isChanged) {
-            await deleteDBStore("rawDataStore");
-            await deleteDBStore("cfgDataStore");
-            await deleteDBStore("outDataStore");
-            rawDataStore = localforage.createInstance({name: 'rawDataStore'});
-            cfgDataStore = localforage.createInstance({name: 'cfgDataStore'});
-            outDataStore = localforage.createInstance({name: 'outDataStore'});
+            if(rawDataStore) {
+              await rawDataStore.clear().then(()=>{console.log('raw data store is empty!')});
+            } else {
+              rawDataStore = localforage.createInstance({name: 'rawDataStore'});
+            }
+            if(cfgDataStore) {
+              await cfgDataStore.clear().then(()=>{console.log('cfg data store is empty!')});
+            } else {
+              cfgDataStore = localforage.createInstance({name: 'cfgDataStore'});
+            }
+            if(outDataStore) {
+              await outDataStore.clear().then(()=>{console.log('out data store is empty!')});
+            } else {
+              outDataStore = localforage.createInstance({name: 'outDataStore'});
+            }
           }
 
           if(query.isChanged) {
@@ -203,10 +213,13 @@ const getOutputConfig = (vis) => {
 };
 
 
-const deleteDBStore = (instanceName) => {
+const deleteDBStore = (instanceName, instance) => {
   return new Promise(async (resolve, reject)=>{
-    await localforage.dropInstance({name:instanceName});
-    console.log('Dropped the store of the instance: ' + instanceName);
+    if(instance.dropInstance) {
+      await instance.dropInstance({name:instanceName});
+      console.log('Dropped the store of the instance: ' + instanceName);
+    }
+    window.indexedDB.deleteDatabase(instanceName);
     const DBDeleteRequest = window.indexedDB.deleteDatabase(instanceName);
     DBDeleteRequest.onerror = function(event) {
       console.log("Error deleting database: " + instanceName);
@@ -388,7 +401,7 @@ const processAndStoreConfigData = async (dataConfig, rawDataStore, cfgDataStore)
     lotStoreStatus[lotKey] = 'start';
 
     const dataSet = await rawDataStore.getItem(lotKey);
-    console.log('###### rawDataStore dataSet ######', dataSet);
+    console.log('###### rawDataStore dataSet ######', lotKey, dataSet);
 
     // dataGroupSortFlatten(_.cloneDeep(dataSet), dataConfig);
     const groupedSortFlattenSets = dataGroupSortFlatten(_.cloneDeep(dataSet), dataConfig);
@@ -534,8 +547,8 @@ const getColumnConfig = (outputConfig) => {
     colConf['name'] = column.name ? column.name : 'COL-' + i;
     colConf['source'] = column.source ? column.source : null;
     colConf['value'] = column.value ? column.value : null;
-    colConf['exprValue'] = column.expr_value ? column.expr_value : null;
-    colConf['condValue'] = column.cond_value ? column.cond_value : null;
+    colConf['expr'] = column.expr ? column.expr : null;
+    colConf['filters'] = column.filters ? column.filters : null;
     colConf['default'] = column.default ? column.default : '';
     columnConfList[i] = colConf;
   }
@@ -544,7 +557,6 @@ const getColumnConfig = (outputConfig) => {
 
 
 const outputRowData = (rawData, columnConfList) => {
-  console.log(rawData);
   const rowDataByIndex = [];
   const rowDataByName = {};
   for(let i in columnConfList) {
@@ -565,13 +577,34 @@ const getCellValue = (colConf, rawData, rowDataByName) => {
   }
 
   if(colConf.source && (typeof(colConf.source) === 'string')) {
-    return rawData[colConf.source];
+    return rawData[colConf.source.trim()];
   }
 
-  if(colConf.exprValue) {
-    if(colConf.source)
+  const sourceData = {};
+  if(colConf.source && _.isPlainObject(colConf.source)) {
+    for(let key in colConf.source) {
+      let match = REG_COL_NAME.exec(colConf.source[key].trim());
+      if(match) {
+        sourceData['@' + key] = rowDataByName[match[1]];
+      } else {
+        sourceData['@' + key] = rawData[colConf.source[key].trim()];
+      }
+    }
   }
+
+  if(colConf.expr) {
+    const exprCalc = new ExprCalc();
+    const exprSeg = exprCalc.set(colConf.expr).trim().minus().segment().getSeg();
+    console.log(exprSeg);
+  }
+
+
+  // if(colConf.exprValue) {
+  //   if(colConf.source)
+  // }
 
   return colConf.default;
 
 };
+
+const REG_COL_NAME = /^col\[(.*)\]$/;

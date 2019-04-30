@@ -15,7 +15,58 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
 
   console.log('@@@@@@ TransformVisProvider @@@@@@');
 
-  const querydsl = {"_source":["LotNumber","Operation","UnitId","StartTestTime","context","value"],"query":{"bool":{"filter":[{"range":{"FileTime":{"gte":"2019-01-01","lte":"2019-04-23"}}},{"term":{"LotNumber":"HG00390"}},{"term":{"Operation":"FT"}},{"term":{"Type":"PinMeasure"}},{"term":{"Pin":"D0_PA0_TXP0"}},{"terms":{"context":["pcie_static_ifvm_5mA_drive0_Vmin","pcie_static_ifvm_0mA_drive0_Vmin"]}}]}}};
+  const querydsl = {
+    "_source": [
+      "LotNumber",
+      "Operation",
+      "UnitId",
+      "StartTestTime",
+      "context",
+      "value"
+    ],
+    "query": {
+      "bool": {
+        "filter": [
+          {
+            "range": {
+              "FileTime": {
+                "gte": "2019-01-01",
+                "lte": "2019-04-30"
+              }
+            }
+          },
+          {
+            "term": {
+              "LotNumber": "HG00390"
+            }
+          },
+          {
+            "term": {
+              "Operation": "FT"
+            }
+          },
+          {
+            "term": {
+              "Type": "PinMeasure"
+            }
+          },
+          {
+            "term": {
+              "Pin": "D0_PA0_TXP0"
+            }
+          },
+          {
+            "terms": {
+              "context": [
+                "pcie_static_ifvm_5mA_drive0_Vmin",
+                "pcie_static_ifvm_0mA_drive0_Vmin"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  };
 
   const dataConfigDefault = {
     "groupBy":  ["UnitId"],
@@ -24,7 +75,9 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
   };
 
   const outputConfigDefault = {
-    "rank": ["1"],
+    "rank": [
+      "1"
+    ],
     "columns": [
       {
         "name": "Lot Number",
@@ -36,15 +89,17 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
       },
       {
         "name": "Mfg Step",
-        "source": "Operation",
-        "default": "Unknow",
+        "default": "FT-Fuse",
+        "source": {
+          "A": "Operation"
+        },
         "cond_value": [
           {
-            "cond": "@source is '6260'",
+            "cond": "@A is 6260",
             "value": "FT"
           },
           {
-            "cond": "@source is '6278'",
+            "cond": "@A is 6278",
             "value": "FT2"
           }
         ]
@@ -75,7 +130,7 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
           "A": "pcie_static_ifvm_5mA_drive0_Vmin",
           "B": "pcie_static_ifvm_0mA_drive0_Vmin"
         },
-        "expr_value": "((@A + @B) / 2) * 100"
+        "expr": "((@A + @B) / 2) * 100"
       },
       {
         "name": "New Col3",
@@ -84,14 +139,14 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
           "B": "UnitId",
           "C": "col['New Col2']"
         },
-        "cond_value": [
+        "filters": [
           {
-            "cond": "(@A is 'HG00390') && (@B isOneOf [‘uid1’, 'uid2'])",
+            "filter": "(@A is 'HG00390') && (@B isOneOf [‘uid1’, 'uid2'])",
             "value": "SS"
           },
           {
-            "cond": "(@A isNot 'HG00390') || (@B isNotOneOf [‘uid1’, 'uid2'])",
-            "expr_value": "'SA - ' + @C"
+            "filter": "(@A isNot 'HG00390') || (@B isNotOneOf [‘uid1’, 'uid2'])",
+            "value": "SA-@C"
           }
         ]
       }
