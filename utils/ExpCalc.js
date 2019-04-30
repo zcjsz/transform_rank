@@ -58,6 +58,10 @@ class ExpHandler {
         return this;
     }
 
+    setSeg(seg) {
+        this.expSeg = seg;
+    }
+
     setRPN(rpn) {
         this.rpn = rpn;
         return this;

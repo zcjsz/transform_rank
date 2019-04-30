@@ -11,10 +11,9 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
   let rawDataStore, cfgDataStore, outDataStore;
 
   window.onbeforeunload = function() {
-    if(rawDataStore) rawDataStore.clear().then(()=>{deleteDBStore("rawDataStore", rawDataStore);});
-    if(cfgDataStore) cfgDataStore.clear().then(()=>{deleteDBStore("cfgDataStore", cfgDataStore);});
-    if(outDataStore) outDataStore.clear().then(()=>{deleteDBStore("outDataStore", outDataStore);});
-    deleteDBStore("localforage");
+    deleteDBStore("rawDataStore", rawDataStore);
+    deleteDBStore("cfgDataStore", cfgDataStore);
+    deleteDBStore("outDataStore", outDataStore);
   };
 
     const myRequestHandler = (vis, state) => {
@@ -215,7 +214,7 @@ const getOutputConfig = (vis) => {
 
 const deleteDBStore = (instanceName, instance) => {
   return new Promise(async (resolve, reject)=>{
-    if(instance.dropInstance) {
+    if(instance && instance.dropInstance) {
       await instance.dropInstance({name:instanceName});
       console.log('Dropped the store of the instance: ' + instanceName);
     }
@@ -572,14 +571,6 @@ const outputRowData = (rawData, columnConfList) => {
 
 const getCellValue = (colConf, rawData, rowDataByName) => {
 
-  if(colConf.value) {
-    return colConf.value;
-  }
-
-  if(colConf.source && (typeof(colConf.source) === 'string')) {
-    return rawData[colConf.source.trim()];
-  }
-
   const sourceData = {};
   if(colConf.source && _.isPlainObject(colConf.source)) {
     for(let key in colConf.source) {
@@ -591,13 +582,34 @@ const getCellValue = (colConf, rawData, rowDataByName) => {
       }
     }
   }
+  const sourceKeys = Object.keys(sourceData);
 
-  if(colConf.expr) {
-    const exprCalc = new ExprCalc();
-    const exprSeg = exprCalc.set(colConf.expr).trim().minus().segment().getSeg();
-    console.log(exprSeg);
+  if(colConf.source && (typeof(colConf.source) === 'string')) {
+    return rawData[colConf.source.trim()];
   }
 
+  if(colConf.value) {
+    let tmp = colConf.value;
+    for(let i in sourceKeys) {
+      if(colConf.value.indexOf(sourceKeys[i])!==-1) {
+        tmp = tmp.replace(new RegExp(sourceKeys[i],"gm"), sourceData[sourceKeys[i]])
+      }
+    }
+    return tmp;
+  }
+
+  if(colConf.expr) {
+    return calcExpr(colConf.expr, sourceKeys, sourceData);
+  }
+
+  if(colConf.filters && Array.isArray(colConf.filters) && colConf.filters.length > 0) {
+    for(let i in colConf.filters) {
+      const filter = colConf.filters[i];
+      if(filter.filter) {
+
+      }
+    }
+  }
 
   // if(colConf.exprValue) {
   //   if(colConf.source)
@@ -606,5 +618,18 @@ const getCellValue = (colConf, rawData, rowDataByName) => {
   return colConf.default;
 
 };
+
+
+const calcExpr = (expr, sourceKeys, sourceData) => {
+  const exprCalc = new ExprCalc();
+  const exprSeg = exprCalc.set(expr).trim().minus().segment().getSeg();
+  for(let i in exprSeg) {
+    if(sourceKeys.indexOf(exprSeg[i])!==-1) {
+      exprSeg[i] = sourceData[exprSeg[i]];
+    }
+  }
+  return exprCalc.toRpn(exprSeg).calcRpn().getResult();
+};
+
 
 const REG_COL_NAME = /^col\[(.*)\]$/;

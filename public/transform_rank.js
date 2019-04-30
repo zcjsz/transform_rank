@@ -122,7 +122,11 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
       },
       {
         "name": "New Col1",
-        "value": "123"
+        "source": {
+          "A": "pcie_static_ifvm_5mA_drive0_Vmin",
+          "B": "pcie_static_ifvm_0mA_drive0_Vmin"
+        },
+        "value": "@A+123+@B+@A"
       },
       {
         "name": "New Col2",
@@ -142,7 +146,7 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
         "filters": [
           {
             "filter": "(@A is 'HG00390') && (@B isOneOf [‘uid1’, 'uid2'])",
-            "value": "SS"
+            "expr": "(@C+100)/2-50"
           },
           {
             "filter": "(@A isNot 'HG00390') || (@B isNotOneOf [‘uid1’, 'uid2'])",
@@ -151,7 +155,7 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
         ]
       }
     ]
-  }
+  };
 
   const VisFactory = Private(VisFactoryProvider);
 
