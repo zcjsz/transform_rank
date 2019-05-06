@@ -1,5 +1,6 @@
 import { dashboardContextProvider } from 'plugins/kibana/dashboard/dashboard_context';
 import axios from 'axios';
+import _ from 'lodash';
 import localforage from 'localforage';
 import ExprCalc from './ExprCalc';
 
