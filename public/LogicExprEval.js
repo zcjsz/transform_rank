@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-class LogicEval {
+class LogicExprEval {
 
   constructor(exp){
     this.exp = exp;
@@ -269,7 +269,7 @@ const isNotBetween = (x, y) => {
 };
 
 const exp = "(@A == HG00390) || (@B :: [uid1, uid2]) && (@C > -100.2)";
-const logicEval = new LogicEval();
+const logicEval = new LogicExprEval();
 logicEval.set(exp).trim().print();
 logicEval.set(exp).trim().segment().printSeg();
 logicEval.set(exp).trim().segment().toRpn().printRpnSeg();

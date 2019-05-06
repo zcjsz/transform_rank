@@ -75,51 +75,58 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
   };
 
   const outputConfigDefault = {
-    "rank": [
-      "1"
-    ],
+    "rank": ["1"],
+
     "columns": [
+
       {
         "name": "Lot Number",
         "source": "LotNumber"
       },
+
       {
         "name": "Operation",
         "source": "Operation"
       },
+
       {
         "name": "Mfg Step",
         "default": "FT-Fuse",
         "source": {
           "A": "Operation"
         },
-        "cond_value": [
+        "filters": [
           {
-            "cond": "@A is 6260",
+            "filter": "@A == 6260",
             "value": "FT"
           },
           {
-            "cond": "@A is 6278",
+            "filter": "@A == 6278",
             "value": "FT2"
           }
         ]
       },
+
       {
         "name": "Unit ID",
         "source": "UnitId"
       },
+
       {
         "name": "StartTestTime",
         "source": "StartTestTime"
       },
+
       {
         "name": "5mA_drive0_Vmin",
         "source": "pcie_static_ifvm_5mA_drive0_Vmin"
       },
+
       {
         "name": "0mA_drive0_Vmin",
         "source": "pcie_static_ifvm_0mA_drive0_Vmin"
       },
+
       {
         "name": "New Col1",
         "source": {
@@ -128,6 +135,7 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
         },
         "value": "@A+123+@B+@A"
       },
+
       {
         "name": "New Col2",
         "source": {
@@ -136,6 +144,7 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
         },
         "expr": "((@A + @B) / 2) * 100"
       },
+
       {
         "name": "New Col3",
         "source": {

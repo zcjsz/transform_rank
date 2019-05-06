@@ -180,7 +180,8 @@ class ExpHandler {
           } else {
             this.valid = false;
             out.push(str);
-            console.log("express number is Not valid: " + str);
+            console.log("expression include non-numeric string !! " + str);
+            throw new Error("expression include non-numeric string: " + str);
           }
       }
       if(this.valid === false) break;
@@ -221,8 +222,9 @@ class ExpHandler {
       this.result = stack[0];
     } else {
       this.valid = false;
-      this.result = stack;
-      console.log('express is Not valid: ' + this.exp);
+      this.result = null;
+      console.log('expression calc failed: ' + this.exp);
+      throw new Error("expression calc failed: " + this.exp);
     }
     return this;
   }

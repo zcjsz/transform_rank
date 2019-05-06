@@ -2,7 +2,8 @@ import { dashboardContextProvider } from 'plugins/kibana/dashboard/dashboard_con
 import axios from 'axios';
 import _ from 'lodash';
 import localforage from 'localforage';
-import ExprCalc from './ExprCalc';
+import ArithExprCalc from './ArithExprCalc';
+import LogicExprEval from './LogicExprEval';
 
 export const createRequestHandler = function(Private, es, indexPatterns, $sanitize) {
 
@@ -600,13 +601,17 @@ const getCellValue = (colConf, rawData, rowDataByName) => {
   }
 
   if(colConf.expr) {
-    return calcExpr(colConf.expr, sourceKeys, sourceData);
+    try {
+      return calcExpr(colConf.expr, sourceKeys, sourceData);
+    } catch(error) {
+      throw new Error(error);
+    }
   }
 
   if(colConf.filters && Array.isArray(colConf.filters) && colConf.filters.length > 0) {
     for(let i in colConf.filters) {
       const filter = colConf.filters[i];
-      if(filter.filter) {
+      if(filter.filter && (filter.expr || filter.value)) {
 
       }
     }
@@ -621,16 +626,18 @@ const getCellValue = (colConf, rawData, rowDataByName) => {
 };
 
 
+const arithExprCalc = new ArithExprCalc();
 const calcExpr = (expr, sourceKeys, sourceData) => {
-  const exprCalc = new ExprCalc();
-  const exprSeg = exprCalc.set(expr).trim().minus().segment().getSeg();
+  const exprSeg = arithExprCalc.set(expr).trim().minus().segment().getSeg();
   for(let i in exprSeg) {
     if(sourceKeys.indexOf(exprSeg[i])!==-1) {
       exprSeg[i] = sourceData[exprSeg[i]];
     }
   }
-  return exprCalc.toRpn(exprSeg).calcRpn().getResult();
+  return arithExprCalc.toRpn(exprSeg).calcRpn().getResult();
 };
+
+const LogicExprEval = new LogicExprEval();
 
 
 const REG_COL_NAME = /^col\[(.*)\]$/;

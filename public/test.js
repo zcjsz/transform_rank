@@ -1,4 +1,4 @@
-const ExpCalc = require('./ExprCalc');
+const ExpCalc = require('./ArithExprCalc');
 let exp = '-3* -(-2.1 *(12 - 5.8+ 7.5)) -6 /- 1.6 -11 ';
 let expCalc = new ExpCalc();
 console.log(exp);
