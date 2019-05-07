@@ -6,5 +6,5 @@ expCalc.set(exp).trim().print();
 expCalc.set(exp).trim().minus().print();
 expCalc.set(exp).trim().minus().segment().printSeg();
 expCalc.set(exp).trim().minus().segment().toRpn().printRpnSeg();
-expCalc.set(exp).trim().minus().segment().toRpn().calcRpn().printResult();
+expCalc.set(exp).trim().minus().segment().toRpn().evalRpn().printResult();
 console.log(expCalc.set(exp).calc());

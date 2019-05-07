@@ -3,9 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="4b7b8b63-07f4-4795-acf4-a5202bf9a20f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ExprCalc.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ArithExprCalc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/LogicEval.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/LogicExprEval.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/new 2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/new 2.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ArithExprCalc.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ArithExprCalc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/LogicExprEval.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/LogicExprEval.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/request_handler.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/request_handler.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/response_handler.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/response_handler.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/test.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/test.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/transform_rank.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/transform_rank.js" afterDir="false" />
     </list>
@@ -21,11 +23,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/request_handler.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="695">
-              <caret line="639" column="42" selection-start-line="639" selection-start-column="42" selection-end-line="639" selection-end-column="42" />
+            <state relative-caret-position="871">
+              <caret line="642" column="41" selection-start-line="642" selection-start-column="41" selection-end-line="642" selection-end-column="41" />
               <folding>
                 <element signature="e#0#86#0" expanded="true" />
                 <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
@@ -37,8 +39,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/ArithExprCalc.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="945">
-              <caret line="230" selection-start-line="230" selection-end-line="230" />
+            <state relative-caret-position="66">
+              <caret line="3" column="6" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/LogicExprEval.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="92">
+              <caret line="75" column="80" lean-forward="true" selection-start-line="75" selection-start-column="80" selection-end-line="75" selection-end-column="80" />
             </state>
           </provider>
         </entry>
@@ -47,16 +58,16 @@
         <entry file="file://$PROJECT_DIR$/public/test.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="198">
-              <caret line="9" column="37" lean-forward="true" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
+              <caret line="9" column="37" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="9" column="34" lean-forward="true" selection-start-line="9" selection-start-column="34" selection-end-line="9" selection-end-column="34" />
+            <state relative-caret-position="264">
+              <caret line="12" column="25" lean-forward="true" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -82,8 +93,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/new 2.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1386">
-              <caret line="63" selection-start-line="63" selection-end-line="63" />
+            <state relative-caret-position="3168">
+              <caret line="144" column="3" selection-start-line="144" selection-start-column="3" selection-end-line="144" selection-end-column="3" />
             </state>
           </provider>
         </entry>
@@ -91,20 +102,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/transform_rank.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1012">
-              <caret line="100" column="25" lean-forward="true" selection-start-line="100" selection-start-column="25" selection-end-line="100" selection-end-column="25" />
+            <state relative-caret-position="2376">
+              <caret line="108" selection-start-line="108" selection-end-line="108" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/LogicExprEval.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="17" column="3" selection-start-line="17" selection-start-column="3" selection-end-line="17" selection-end-column="3" />
             </state>
           </provider>
         </entry>
@@ -122,8 +124,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>q1Alias</find>
-      <find>optionsTemplate</find>
       <find>configVerify</find>
       <find>editor_controller</find>
       <find>ReactDOM</find>
@@ -152,6 +152,8 @@
       <find>localforage</find>
       <find>this.trim().minus().segment().toRpn()</find>
       <find>expSeg</find>
+      <find>REG_MINUS</find>
+      <find>REG_NUMBER</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$</dir>
@@ -181,17 +183,20 @@
         <option value="$PROJECT_DIR$/public/options_template.html" />
         <option value="$PROJECT_DIR$/public/editor_controller.js" />
         <option value="$PROJECT_DIR$/public/response_handler.js" />
-        <option value="$PROJECT_DIR$/new 2.txt" />
         <option value="$PROJECT_DIR$/public/MyColumn.js" />
         <option value="$PROJECT_DIR$/public/MyRow.js" />
         <option value="$PROJECT_DIR$/public/test.js" />
         <option value="$PROJECT_DIR$/utils/ExpCalc.js" />
         <option value="$PROJECT_DIR$/LogicEval.js" />
-        <option value="$PROJECT_DIR$/public/1.js" />
         <option value="$PROJECT_DIR$/public/LogicEval.js" />
         <option value="$PROJECT_DIR$/public/ExprCalc.js" />
-        <option value="$PROJECT_DIR$/public/transform_rank.js" />
+        <option value="$PROJECT_DIR$/public/ArithExprCalc.js" />
+        <option value="$PROJECT_DIR$/new 2.txt" />
+        <option value="$PROJECT_DIR$/public/1.js" />
         <option value="$PROJECT_DIR$/public/request_handler.js" />
+        <option value="$PROJECT_DIR$/public/transform_rank.js" />
+        <option value="$PROJECT_DIR$/public/2.js" />
+        <option value="$PROJECT_DIR$/public/LogicExprEval.js" />
       </list>
     </option>
   </component>
@@ -274,8 +279,11 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.1.js">
+  <component name="RunManager" selected="Node.js.LogicExprEval.js">
     <configuration name="1.js" type="NodeJSConfigurationType" path-to-node="$USER_HOME$/.nvm/versions/node/v8.11.4/bin/node" nameIsGenerated="true" path-to-js-file="public/1.js" working-dir="$PROJECT_DIR$">
+      <method v="2" />
+    </configuration>
+    <configuration name="2.js" type="NodeJSConfigurationType" temporary="true" path-to-node="$USER_HOME$/.nvm/versions/node/v8.11.4/bin/node" nameIsGenerated="true" path-to-js-file="public/2.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
     <configuration name="ArithExprCalc.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/public/ArithExprCalc.js" working-dir="$PROJECT_DIR$">
@@ -292,10 +300,12 @@
       <item itemvalue="Node.js.ArithExprCalc.js" />
       <item itemvalue="Node.js.test.js" />
       <item itemvalue="Node.js.LogicExprEval.js" />
+      <item itemvalue="Node.js.2.js" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Node.js.LogicExprEval.js" />
+        <item itemvalue="Node.js.2.js" />
         <item itemvalue="Node.js.test.js" />
         <item itemvalue="Node.js.ArithExprCalc.js" />
       </list>
@@ -346,7 +356,7 @@
       <workItem from="1556498532320" duration="35629000" />
       <workItem from="1556605299816" duration="7647000" />
       <workItem from="1557102976078" duration="622000" />
-      <workItem from="1557103625085" duration="24692000" />
+      <workItem from="1557103625085" duration="45818000" />
     </task>
     <task id="LOCAL-00001" summary="new repo">
       <created>1555669402262</created>
@@ -411,23 +421,29 @@
       <option name="project" value="LOCAL" />
       <updated>1557135369512</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="repo 20190506180400">
+      <created>1557137094466</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1557137094466</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="369548000" />
+    <option name="totallyTimeSpent" value="390674000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="51" y="25" width="1869" height="1055" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49500555" visible="true" weight="0.21289274" />
       <window_info id="Structure" order="1" sideWeight="0.50499445" side_tool="true" weight="0.21289274" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32963374" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.40510544" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.6026637" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.19644839" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.60155386" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -463,11 +479,10 @@
     <MESSAGE value="repo 20190430142300" />
     <MESSAGE value="repo 20190430175600" />
     <MESSAGE value="repo 20190506173600" />
-    <option name="LAST_COMMIT_MESSAGE" value="repo 20190506173600" />
+    <MESSAGE value="repo 20190506180400" />
+    <option name="LAST_COMMIT_MESSAGE" value="repo 20190506180400" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/public/plotly_html.html" />
-    <entry file="file://$PROJECT_DIR$/public/ReactComponent.js" />
     <entry file="file://$PROJECT_DIR$/public/plotly_table.html" />
     <entry file="file://$PROJECT_DIR$/public/try.html" />
     <entry file="file://$PROJECT_DIR$/yarn.lock">
@@ -663,13 +678,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/ExpCalc.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="23" column="4" selection-start-line="23" selection-start-column="4" selection-end-line="23" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/MyColumn.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
@@ -684,59 +692,76 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/new 2.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1386">
-          <caret line="63" selection-start-line="63" selection-end-line="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/1.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="9" column="34" lean-forward="true" selection-start-line="9" selection-start-column="34" selection-end-line="9" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/LogicExprEval.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="17" column="3" selection-start-line="17" selection-start-column="3" selection-end-line="17" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/test.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
-          <caret line="9" column="37" lean-forward="true" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
+          <caret line="9" column="37" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/new 2.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3168">
+          <caret line="144" column="3" selection-start-line="144" selection-start-column="3" selection-end-line="144" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/ArithExprCalc.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="66">
+          <caret line="3" column="6" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/ExpCalc.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="291">
+          <caret line="204" column="4" selection-start-line="204" selection-start-column="4" selection-end-line="204" selection-end-column="4" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/transform_rank.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1012">
-          <caret line="100" column="25" lean-forward="true" selection-start-line="100" selection-start-column="25" selection-end-line="100" selection-end-column="25" />
+        <state relative-caret-position="2376">
+          <caret line="108" selection-start-line="108" selection-end-line="108" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/ArithExprCalc.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="945">
-          <caret line="230" selection-start-line="230" selection-end-line="230" />
-        </state>
-      </provider>
+    <entry file="file://$PROJECT_DIR$/public/.editorconfig">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/public/request_handler.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="695">
-          <caret line="639" column="42" selection-start-line="639" selection-start-column="42" selection-end-line="639" selection-end-column="42" />
+        <state relative-caret-position="871">
+          <caret line="642" column="41" selection-start-line="642" selection-start-column="41" selection-end-line="642" selection-end-column="41" />
           <folding>
             <element signature="e#0#86#0" expanded="true" />
             <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/LogicExprEval.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="92">
+          <caret line="75" column="80" lean-forward="true" selection-start-line="75" selection-start-column="80" selection-end-line="75" selection-end-column="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="88">
+          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/1.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="12" column="25" lean-forward="true" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
         </state>
       </provider>
     </entry>

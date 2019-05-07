@@ -75,94 +75,94 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
   };
 
   const outputConfigDefault = {
-    "rank": ["1"],
-
+    "rank": [
+      "1"
+    ],
     "columns": [
-
       {
         "name": "Lot Number",
         "source": "LotNumber"
       },
-
       {
         "name": "Operation",
         "source": "Operation"
       },
-
       {
-        "name": "Mfg Step",
-        "default": "FT-Fuse",
+        "name": "Cam Oper",
+        "default": "",
         "source": {
-          "A": "Operation"
+          "A": "Operation",
+          "B": "LotNumber",
+          "C": "[HG00390, HG00391]"
         },
         "filters": [
           {
-            "filter": "@A == 6260",
-            "value": "FT"
+            "filter": "(@A == FT) && (@B :: @C)",
+            "value": "6260"
           },
           {
-            "filter": "@A == 6278",
-            "value": "FT2"
-          }
-        ]
-      },
-
-      {
-        "name": "Unit ID",
-        "source": "UnitId"
-      },
-
-      {
-        "name": "StartTestTime",
-        "source": "StartTestTime"
-      },
-
-      {
-        "name": "5mA_drive0_Vmin",
-        "source": "pcie_static_ifvm_5mA_drive0_Vmin"
-      },
-
-      {
-        "name": "0mA_drive0_Vmin",
-        "source": "pcie_static_ifvm_0mA_drive0_Vmin"
-      },
-
-      {
-        "name": "New Col1",
-        "source": {
-          "A": "pcie_static_ifvm_5mA_drive0_Vmin",
-          "B": "pcie_static_ifvm_0mA_drive0_Vmin"
-        },
-        "value": "@A+123+@B+@A"
-      },
-
-      {
-        "name": "New Col2",
-        "source": {
-          "A": "pcie_static_ifvm_5mA_drive0_Vmin",
-          "B": "pcie_static_ifvm_0mA_drive0_Vmin"
-        },
-        "expr": "((@A + @B) / 2) * 100"
-      },
-
-      {
-        "name": "New Col3",
-        "source": {
-          "A": "LotNumber",
-          "B": "UnitId",
-          "C": "col['New Col2']"
-        },
-        "filters": [
-          {
-            "filter": "(@A is 'HG00390') && (@B isOneOf [‘uid1’, 'uid2'])",
-            "expr": "(@C+100)/2-50"
-          },
-          {
-            "filter": "(@A isNot 'HG00390') || (@B isNotOneOf [‘uid1’, 'uid2'])",
-            "value": "SA-@C"
+            "filter": "@A == FT2",
+            "value": "6278"
           }
         ]
       }
+
+      // {
+      //   "name": "Unit ID",
+      //   "source": "UnitId"
+      // },
+      //
+      // {
+      //   "name": "StartTestTime",
+      //   "source": "StartTestTime"
+      // },
+      //
+      // {
+      //   "name": "5mA_drive0_Vmin",
+      //   "source": "pcie_static_ifvm_5mA_drive0_Vmin"
+      // },
+      //
+      // {
+      //   "name": "0mA_drive0_Vmin",
+      //   "source": "pcie_static_ifvm_0mA_drive0_Vmin"
+      // },
+      //
+      // {
+      //   "name": "New Col1",
+      //   "source": {
+      //     "A": "pcie_static_ifvm_5mA_drive0_Vmin",
+      //     "B": "pcie_static_ifvm_0mA_drive0_Vmin"
+      //   },
+      //   "value": "@A+123+@B+@A"
+      // },
+      //
+      // {
+      //   "name": "New Col2",
+      //   "source": {
+      //     "A": "pcie_static_ifvm_5mA_drive0_Vmin",
+      //     "B": "pcie_static_ifvm_0mA_drive0_Vmin"
+      //   },
+      //   "expr": "((@A + @B) / 2) * 100"
+      // },
+      //
+      // {
+      //   "name": "New Col3",
+      //   "source": {
+      //     "A": "LotNumber",
+      //     "B": "UnitId",
+      //     "C": "col['New Col2']"
+      //   },
+      //   "filters": [
+      //     {
+      //       "filter": "(@A is 'HG00390') && (@B isOneOf [‘uid1’, 'uid2'])",
+      //       "expr": "(@C+100)/2-50"
+      //     },
+      //     {
+      //       "filter": "(@A isNot 'HG00390') || (@B isNotOneOf [‘uid1’, 'uid2'])",
+      //       "value": "SA-@C"
+      //     }
+      //   ]
+      // }
     ]
   };
 

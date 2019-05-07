@@ -1,12 +1,15 @@
-class ExpHandler {
+const REG_MINUS = /\)|\d|\w/;
+const REG_NUMBER = /^(\+|-)?[0-9]+\.?[0-9]*$/;
+
+class ArithExprCalc {
 
   constructor(exp){
     this.exp = exp;
     this.expSeg = [];
     this.rpn = '';
     this.rpnSeg = [];
-    this.result = '';
-    this.valid = true;
+    this.result = null;
+    this.valid = false;
   }
 
   print() {
@@ -84,7 +87,7 @@ class ExpHandler {
       if(this.exp[i]==='-') {
         if(i===0) {
           out.push('#');
-        } else if(ExpHandler.REG_MINUS.test(this.exp[i-1])) {
+        } else if(REG_MINUS.test(this.exp[i-1])) {
           out.push('-');
         } else {
           out.push('#');
@@ -175,7 +178,7 @@ class ExpHandler {
           }
           break;
         default:                                                     // In addition to those above operators and ')'
-          if(ExpHandler.REG_NUMBER.test(str)) {                    // other elements in expression are treated as a number.
+          if(REG_NUMBER.test(str)) {                    // other elements in expression are treated as a number.
             out.push(str);                                       // Add valid number to output stream.
           } else {
             this.valid = false;
@@ -204,7 +207,7 @@ class ExpHandler {
     if(!this.valid) return;
     let stack = [];
     for(let i=0; i<this.rpnSeg.length; i++) {
-      if(ExpHandler.REG_NUMBER.test(this.rpnSeg[i])) {
+      if(REG_NUMBER.test(this.rpnSeg[i])) {
         stack.push(parseFloat(this.rpnSeg[i]));
       } else {
         let x,y;
@@ -218,23 +221,23 @@ class ExpHandler {
         }
       }
     }
-    if(stack.length===1 && ExpHandler.REG_NUMBER.test(stack[0])) {
+    if(stack.length===1 && REG_NUMBER.test(stack[0])) {
       this.result = stack[0];
+      return this;
     } else {
       this.valid = false;
       this.result = null;
       console.log('expression calc failed: ' + this.exp);
       throw new Error("expression calc failed: " + this.exp);
     }
-    return this;
   }
 
   // Expression calculation
   calc(exp) {
     if(exp) {
-      this.set(exp).trim().minus().segment().toRpn().calcRpn();
+      this.set(exp).trim().minus().segment().toRpn().evalRpn();
     } else {
-      this.trim().minus().segment().toRpn().calcRpn();
+      this.trim().minus().segment().toRpn().evalRpn();
     }
     if(this.valid) {
       return this.result;
@@ -244,7 +247,4 @@ class ExpHandler {
   }
 }
 
-ExpHandler.REG_MINUS = /\)|\d|\w/;
-ExpHandler.REG_NUMBER = /^(\+|-)?[0-9]+\.?[0-9]*$/;
-
-module.exports = ExpHandler;
+module.exports = ArithExprCalc;

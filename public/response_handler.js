@@ -242,8 +242,8 @@ new column
         }
       }
 
-      let xData = expCalc.toRpn(xSeg).calcRpn().getResult();
-      let yData = expCalc.toRpn(ySeg).calcRpn().getResult();
+      let xData = expCalc.toRpn(xSeg).evalRpn().getResult();
+      let yData = expCalc.toRpn(ySeg).evalRpn().getResult();
 
       if(xData === void 0 || yData === void 0) continue;
 

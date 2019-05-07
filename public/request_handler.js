@@ -85,7 +85,6 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
             await processAndStoreOutputData(outputConfig, cfgDataStore, outDataStore);
           }
 
-
           console.log('used time: ', (new Date() - statTime));
 
           return({
@@ -559,28 +558,30 @@ const getColumnConfig = (outputConfig) => {
 
 const outputRowData = (rawData, columnConfList) => {
   const rowDataByIndex = [];
-  const rowDataByName = {};
+  const rowDataByColName = {};
   for(let i in columnConfList) {
     const colConf = columnConfList[i];
-    const cellValue = getCellValue(colConf, rawData, rowDataByName);
+    const cellValue = getCellValue(colConf, rawData, rowDataByColName);
     rowDataByIndex[colConf.index] = cellValue;
-    rowDataByName[colConf.name] = cellValue;
+    rowDataByColName[colConf.name] = cellValue;
   }
   console.log('====== rowDataByIndex ======', rowDataByIndex);
   return rowDataByIndex;
 };
 
 
-const getCellValue = (colConf, rawData, rowDataByName) => {
+const getCellValue = (colConf, rawData, rowDataByColName) => {
 
   const sourceData = {};
   if(colConf.source && _.isPlainObject(colConf.source)) {
     for(let key in colConf.source) {
       let match = REG_COL_NAME.exec(colConf.source[key].trim());
       if(match) {
-        sourceData['@' + key] = rowDataByName[match[1]];
-      } else {
+        sourceData['@' + key] = rowDataByColName[match[1]];
+      } else if(rawData[colConf.source[key]]) {
         sourceData['@' + key] = rawData[colConf.source[key].trim()];
+      } else {
+        sourceData['@' + key] = colConf.source[key];
       }
     }
   }
@@ -591,13 +592,7 @@ const getCellValue = (colConf, rawData, rowDataByName) => {
   }
 
   if(colConf.value) {
-    let tmp = colConf.value;
-    for(let i in sourceKeys) {
-      if(colConf.value.indexOf(sourceKeys[i])!==-1) {
-        tmp = tmp.replace(new RegExp(sourceKeys[i],"gm"), sourceData[sourceKeys[i]])
-      }
-    }
-    return tmp;
+    return calcValue(colConf.value, sourceKeys, sourceData);
   }
 
   if(colConf.expr) {
@@ -610,19 +605,33 @@ const getCellValue = (colConf, rawData, rowDataByName) => {
 
   if(colConf.filters && Array.isArray(colConf.filters) && colConf.filters.length > 0) {
     for(let i in colConf.filters) {
-      const filter = colConf.filters[i];
-      if(filter.filter && (filter.expr || filter.value)) {
-
+      const filterObj = colConf.filters[i];
+      if(filterObj.filter && (filterObj.expr || filterObj.value)) {
+        if(evalExpr(filterObj.filter, sourceKeys, sourceData)) {
+          if(filterObj.value) return calcValue(filterObj.value, sourceKeys, sourceData);
+          if(filterObj.expr)  return  calcExpr(filterObj.expr, sourceKeys, sourceData);
+        } else {
+          return colConf.default;
+        }
+      } else {
+        throw new Error("Filter setting error: " + filterObj);
       }
     }
   }
 
-  // if(colConf.exprValue) {
-  //   if(colConf.source)
-  // }
-
   return colConf.default;
 
+};
+
+
+const calcValue = (expr, sourceKeys, sourceData) => {
+  let tmp = expr;
+  for(let i in sourceKeys) {
+    if(expr.indexOf(sourceKeys[i])!==-1) {
+      tmp = tmp.replace(new RegExp(sourceKeys[i],"gm"), sourceData[sourceKeys[i]])
+    }
+  }
+  return tmp;
 };
 
 
@@ -634,10 +643,21 @@ const calcExpr = (expr, sourceKeys, sourceData) => {
       exprSeg[i] = sourceData[exprSeg[i]];
     }
   }
-  return arithExprCalc.toRpn(exprSeg).calcRpn().getResult();
+  return arithExprCalc.toRpn(exprSeg).evalRpn().getResult();
 };
 
-const LogicExprEval = new LogicExprEval();
 
+const logicExprEval = new LogicExprEval();
+const evalExpr = (expr, sourceKeys, sourceData) => {
+  const exprSeg = logicExprEval.set(expr).trim().segment().getSeg();
+  for(let i in exprSeg) {
+    if(sourceKeys.indexOf(exprSeg[i])>-1) {
+      exprSeg[i] = sourceData[exprSeg[i]];
+    }
+  }
+  const rpnSeg = logicExprEval.toRpn(exprSeg).getRpnSeg();
+  const rpnRes = logicExprEval.toRpn(exprSeg).evalRpn().getResult();
+  return logicExprEval.toRpn(exprSeg).evalRpn().getResult();
+};
 
 const REG_COL_NAME = /^col\[(.*)\]$/;
