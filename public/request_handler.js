@@ -574,18 +574,24 @@ const getCellValue = (colConf, rawData, rowDataByColName) => {
 
   const sourceData = {};
   if(colConf.source && _.isPlainObject(colConf.source)) {
-    for(let key in colConf.source) {
-      let match = REG_COL_NAME.exec(colConf.source[key].trim());
+    for(let sourceKey in colConf.source) {
+      let match = REG_COL_NAME.exec(colConf.source[sourceKey].trim());
       if(match) {
-        sourceData['@' + key] = rowDataByColName[match[1]];
-      } else if(rawData[colConf.source[key]]) {
-        sourceData['@' + key] = rawData[colConf.source[key].trim()];
+        sourceData['@' + sourceKey] = rowDataByColName[match[1]];
+      } else if(rawData[colConf.source[sourceKey]]) {
+        sourceData['@' + sourceKey] = rawData[colConf.source[sourceKey].trim()];
       } else {
-        sourceData['@' + key] = colConf.source[key];
+        sourceData['@' + sourceKey] = colConf.source[sourceKey];
       }
     }
   }
   const sourceKeys = Object.keys(sourceData);
+
+  for(let sourceKey in sourceData) {
+    if(!sourceData[sourceKey]) {
+      throw new Error(`source data has error: ${colConf.name} - ${sourceKey}`);
+    }
+  }
 
   if(colConf.source && (typeof(colConf.source) === 'string')) {
     return rawData[colConf.source.trim()];
@@ -610,13 +616,12 @@ const getCellValue = (colConf, rawData, rowDataByColName) => {
         if(evalExpr(filterObj.filter, sourceKeys, sourceData)) {
           if(filterObj.value) return calcValue(filterObj.value, sourceKeys, sourceData);
           if(filterObj.expr)  return  calcExpr(filterObj.expr, sourceKeys, sourceData);
-        } else {
-          return colConf.default;
         }
       } else {
         throw new Error("Filter setting error: " + filterObj);
       }
     }
+    return colConf.default;
   }
 
   return colConf.default;
@@ -643,7 +648,7 @@ const calcExpr = (expr, sourceKeys, sourceData) => {
       exprSeg[i] = sourceData[exprSeg[i]];
     }
   }
-  return arithExprCalc.toRpn(exprSeg).evalRpn().getResult();
+  return arithExprCalc.toRpn(exprSeg).calcRpn().getResult();
 };
 
 

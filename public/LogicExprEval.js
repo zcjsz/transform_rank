@@ -178,8 +178,8 @@ class LogicExprEval {
         } else {
           let y = stack.pop();
           let x = stack.pop();
-          y = typeof y !== 'boolean' ? y.replace(new RegExp('\\s',"gm"),'') : y;
-          x = typeof x !== 'boolean' ? x.replace(new RegExp('\\s',"gm"),'') : x;
+          y = typeof y === 'string' ? y.replace(new RegExp('\\s',"gm"),'') : y;
+          x = typeof x === 'string' ? x.replace(new RegExp('\\s',"gm"),'') : x;
           switch(item) {
             case '==': stack.push(isEqual(x, y));      break;
             case '!=': stack.push(isNotEqual(x, y));   break;

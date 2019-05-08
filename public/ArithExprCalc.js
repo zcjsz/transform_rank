@@ -9,7 +9,7 @@ class ArithExprCalc {
     this.rpn = '';
     this.rpnSeg = [];
     this.result = null;
-    this.valid = false;
+    this.valid = true;
   }
 
   print() {
@@ -190,15 +190,19 @@ class ArithExprCalc {
       if(this.valid === false) break;
     }
 
-    if(stack.length>0){
-      const stackLen = stack.length;
-      for(let j=0; j<stackLen; j++) {
-        out.push(stack.pop());
+    if(this.valid) {
+      if(stack.length>0){
+        const stackLen = stack.length;
+        for(let j=0; j<stackLen; j++) {
+          out.push(stack.pop());
+        }
       }
+      this.rpnSeg = out;
+      this.rpn = this.rpnSeg.join('');
+    } else {
+      this.rpnSeg = [];
+      this.rpn = 'error';
     }
-
-    this.rpnSeg = out;
-    this.rpn = this.rpnSeg.join('');
     return this;
   }
 
