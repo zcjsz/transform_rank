@@ -394,23 +394,17 @@ const processAndStoreConfigData = async (dataConfig, rawDataStore, cfgDataStore)
   const lotKeys = await rawDataStore.keys();
   let totalCnt = 0;
   const lotStoreStatus = {};
-
   for(let i in lotKeys) {
-
     const lotKey = lotKeys[i];
     lotStoreStatus[lotKey] = 'start';
-
     const dataSet = await rawDataStore.getItem(lotKey);
     console.log('###### rawDataStore dataSet ######', lotKey, dataSet);
-
-    // dataGroupSortFlatten(_.cloneDeep(dataSet), dataConfig);
     const groupedSortFlattenSets = dataGroupSortFlatten(_.cloneDeep(dataSet), dataConfig);
     console.log('###### dataGroupSortFlatten sets ######', groupedSortFlattenSets);
-
     cfgDataStore.setItem(lotKey, groupedSortFlattenSets).then((unitSets)=>{
       lotStoreStatus[lotKey] = 'done';
     }).catch((err)=>{
-      console.log(err);
+      throw new Error(err);
     });
   }
   if(await isLocalforageDone(lotStoreStatus) === 'done') {
@@ -502,37 +496,36 @@ const dataFlattern = (data, dataConfig) => {
 //===================================================================================
 //===================================================================================
 
-const processAndStoreOutputData = async (outputConfig, cfgDataStore, outputDataStore) => {
-
+const processAndStoreOutputData = async (outputConfig, cfgDataStore, outDataStore) => {
   console.log('###### process and store output data ######');
-
-  const rank = outputConfig.body.rank;
-  const rankAll = (rank && Array.isArray(rank) && rank.length > 0) ? false : true;
-
+  const isRankAll = (!(outputConfig.body.rank && Array.isArray(outputConfig.body.rank) && outputConfig.body.rank.length > 0));
   const columnConfList = getColumnConfig(outputConfig);
-
   const lotKeys = await cfgDataStore.keys();
-
+  const lotStoreStatus = {};
   for(let i in lotKeys) {
-
     const lotKey = lotKeys[i];
+    lotStoreStatus[lotKey] = 'start';
     const unitsSet = await cfgDataStore.getItem(lotKey);
     let rankUnitsSet = {};
-
-    if(rankAll) {
-      rankUnitsSet = unitsSet;
-    } else {
-      for(let unitID in unitsSet) {
-        const unitSet = unitsSet[unitID];
-        if(!rankUnitsSet[unitID]) rankUnitsSet[unitID] = {};
-        for(let i in rank) {
-          if(unitSet.hasOwnProperty(rank[i])) {
-            rankUnitsSet[unitID][[rank[i]]] = outputRowData(unitSet[rank[i]], columnConfList);
-          }
+    for(let unitID in unitsSet) {
+      const unitSet = unitsSet[unitID];
+      const rank = isRankAll ? Object.keys(unitSet) : outputConfig.body.rank;
+      for(let i in rank) {
+        if(unitSet.hasOwnProperty(rank[i])) {
+          if(!rankUnitsSet[unitID]) rankUnitsSet[unitID] = {};
+          rankUnitsSet[unitID][[rank[i]]] = outputRowData(unitSet[rank[i]], columnConfList);
         }
       }
     }
-
+    console.log('====== rankUnitsSet ======', rankUnitsSet);
+    outDataStore.setItem(lotKey, rankUnitsSet).then(()=>{
+      lotStoreStatus[lotKey] = 'done';
+    }).catch((err)=>{
+      throw new Error(err);
+    });
+  }
+  if(await isLocalforageDone(lotStoreStatus) === 'done') {
+    return 'done';
   }
 };
 
@@ -565,7 +558,6 @@ const outputRowData = (rawData, columnConfList) => {
     rowDataByIndex[colConf.index] = cellValue;
     rowDataByColName[colConf.name] = cellValue;
   }
-  console.log('====== rowDataByIndex ======', rowDataByIndex);
   return rowDataByIndex;
 };
 
