@@ -198,13 +198,13 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
           Prev: JSON.stringify(querydsl,null, 2),
           Next: JSON.stringify(querydsl,null, 2),
         },
-        OutputConfig: {
-          Prev: JSON.stringify(outputConfigDefault,null,2),
-          Next: JSON.stringify(outputConfigDefault,null,2),
-        },
-        DataConfig: {
+        DataProcess: {
           Prev: JSON.stringify(dataConfigDefault, null, 2),
           Next: JSON.stringify(dataConfigDefault, null, 2),
+        },
+        DataConfig: {
+          Prev: JSON.stringify(outputConfigDefault,null,2),
+          Next: JSON.stringify(outputConfigDefault,null,2),
         }
       },
     },

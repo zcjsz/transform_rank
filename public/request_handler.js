@@ -10,112 +10,112 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
   console.log('@@@@@@ createRequestHandler @@@@@@');
 
   let flag = true;
-  let rawDataStore, cfgDataStore, outDataStore;
+  let rawDataStore, proDataStore, cfgDataStore;
 
   window.onbeforeunload = function() {
     deleteDBStore("rawDataStore", rawDataStore);
+    deleteDBStore("proDataStore", proDataStore);
     deleteDBStore("cfgDataStore", cfgDataStore);
-    deleteDBStore("outDataStore", outDataStore);
   };
 
-    const myRequestHandler = (vis, state) => {
+  const myRequestHandler = (vis, state) => {
 
-      console.log('@@@@@@ myRequestHandler @@@@@@');
+    console.log('@@@@@@ myRequestHandler @@@@@@');
 
-      if(flag) {
-        vis.params.IndexPattern.Next = '';
-        vis.updateState();
-      }
-      flag = false;
+    if(flag) {
+      vis.params.IndexPattern.Next = '';
+      vis.updateState();
+    }
+    flag = false;
 
-      const handleRequest = async () => {
+    const handleRequest = async () => {
 
-        try {
+      try {
 
-          const querySetting = await getQuerySetting(vis, indexPatterns);
-          console.log('===== query setting =====', querySetting);
+        const querySetting = await getQuerySetting(vis, indexPatterns);
+        console.log('===== query setting =====', querySetting);
 
-          const query = queryPreHandler(querySetting);
-          console.log('===== query handler =====', query);
+        const query = queryPreHandler(querySetting);
+        console.log('===== query handler =====', query);
 
-          const dataConfig = getDataConfig(vis);
-          console.log('===== data config =====', dataConfig);
+        const dataProcess = getDataProcessSetting(vis);
+        console.log('===== data config =====', dataProcess);
 
-          const outputConfig = getOutputConfig(vis);
-          console.log('===== output config =====', outputConfig);
+        const dataConfig = getDataConfigSetting(vis);
+        console.log('===== output config =====', dataConfig);
 
-          const statTime = new Date();
+        const statTime = new Date();
 
-          // query.isChanged = false;
-          // dataConfig.isChanged = false;
+        // query.isChanged = false;
+        // dataProcess.isChanged = false;
 
-          if(query.isChanged) {
-            if(rawDataStore) {
-              await rawDataStore.clear().then(()=>{console.log('raw data store is empty!')});
-            } else {
-              rawDataStore = localforage.createInstance({name: 'rawDataStore'});
-            }
-            if(cfgDataStore) {
-              await cfgDataStore.clear().then(()=>{console.log('cfg data store is empty!')});
-            } else {
-              cfgDataStore = localforage.createInstance({name: 'cfgDataStore'});
-            }
-            if(outDataStore) {
-              await outDataStore.clear().then(()=>{console.log('out data store is empty!')});
-            } else {
-              outDataStore = localforage.createInstance({name: 'outDataStore'});
-            }
+        if(query.isChanged) {
+          if(rawDataStore) {
+            await rawDataStore.clear().then(()=>{console.log('raw data store is empty!')});
+          } else {
+            rawDataStore = localforage.createInstance({name: 'rawDataStore'});
           }
-
-          if(query.isChanged) {
-            if(query.type === "raw") {
-              await scrollSearch(query, rawDataStore);
-            } else if (query.type === "aggs") {
-              await search(query);
-            } else {
-              console.log('query setting is not changed');
-            }
+          if(proDataStore) {
+            await proDataStore.clear().then(()=>{console.log('pro data store is empty!')});
+          } else {
+            proDataStore = localforage.createInstance({name: 'proDataStore'});
           }
-
-          if(query.isChanged || dataConfig.isChanged){
-            await processAndStoreConfigData(dataConfig.body, rawDataStore, cfgDataStore);
+          if(cfgDataStore) {
+            await cfgDataStore.clear().then(()=>{console.log('cfg data store is empty!')});
+          } else {
+            cfgDataStore = localforage.createInstance({name: 'cfgDataStore'});
           }
-
-          if(query.isChanged || outputConfig.isChanged) {
-            await processAndStoreOutputData(outputConfig, cfgDataStore, outDataStore);
-          }
-
-          console.log('used time: ', (new Date() - statTime));
-
-          return({
-            result: {hits:[]},
-            config: 'config',
-          })
-
-        } catch(err) {
-          throw new Error(err.message);
         }
-      };
 
+        if(query.isChanged) {
+          if(query.type === "raw") {
+            await scrollSearch(query, rawDataStore);
+          } else if (query.type === "aggs") {
+            await search(query);
+          } else {
+            console.log('query setting is not changed');
+          }
+        }
 
-      return new Promise((resolve, reject) => {
-        handleRequest()
-        .then((res)=>{
-          resolve(res)
+        if(query.isChanged || dataProcess.isChanged){
+          await processAndStoreProData(dataProcess.body, rawDataStore, proDataStore);
+        }
+
+        if(query.isChanged || dataConfig.isChanged) {
+          await processAndStoreCfgData(dataConfig, proDataStore, cfgDataStore);
+        }
+
+        console.log('used time: ', (new Date() - statTime));
+
+        return({
+          result: {hits:[]},
+          config: 'config',
         })
-        .catch((err)=>{
-          resolve({
-            error: err.message,
-            html: display_error(err.message)
-          })
-        });
-      });
 
+      } catch(err) {
+        throw new Error(err.message);
+      }
     };
-  
-    return myRequestHandler;
-    
+
+
+    return new Promise((resolve, reject) => {
+      handleRequest()
+      .then((res)=>{
+        resolve(res)
+      })
+      .catch((err)=>{
+        resolve({
+          error: err.message,
+          html: display_error(err.message)
+        })
+      });
+    });
+
   };
+
+  return myRequestHandler;
+    
+};
 
 
 
@@ -187,7 +187,20 @@ const queryPreHandler = (query) => {
 };
 
 
-const getDataConfig = (vis) => {
+const getDataProcessSetting = (vis) => {
+  let isChanged = false;
+  if(vis.params.DataProcess.Next !== vis.params.DataProcess.Prev) {
+    vis.params.DataProcess.Prev = vis.params.DataProcess.Next;
+    isChanged = true;
+  }
+  return({
+    body: JSON.parse(vis.params.DataProcess.Next),
+    isChanged: isChanged
+  });
+};
+
+
+const getDataConfigSetting = (vis) => {
   let isChanged = false;
   if(vis.params.DataConfig.Next !== vis.params.DataConfig.Prev) {
     vis.params.DataConfig.Prev = vis.params.DataConfig.Next;
@@ -195,19 +208,6 @@ const getDataConfig = (vis) => {
   }
   return({
     body: JSON.parse(vis.params.DataConfig.Next),
-    isChanged: isChanged
-  });
-};
-
-
-const getOutputConfig = (vis) => {
-  let isChanged = false;
-  if(vis.params.OutputConfig.Next !== vis.params.OutputConfig.Prev) {
-    vis.params.OutputConfig.Prev = vis.params.OutputConfig.Next;
-    isChanged = true;
-  }
-  return({
-    body: JSON.parse(vis.params.OutputConfig.Next),
     isChanged: isChanged
   });
 };
@@ -389,7 +389,7 @@ const isLocalforageDone = (lotStoreStatus) => {
 //
 // ==========================================================================================
 
-const processAndStoreConfigData = async (dataConfig, rawDataStore, cfgDataStore) => {
+const processAndStoreProData = async (dataProcess, rawDataStore, proDataStore) => {
   console.log('###### process and store config data ######');
   const lotKeys = await rawDataStore.keys();
   let totalCnt = 0;
@@ -398,10 +398,9 @@ const processAndStoreConfigData = async (dataConfig, rawDataStore, cfgDataStore)
     const lotKey = lotKeys[i];
     lotStoreStatus[lotKey] = 'start';
     const dataSet = await rawDataStore.getItem(lotKey);
-    console.log('###### rawDataStore dataSet ######', lotKey, dataSet);
-    const groupedSortFlattenSets = dataGroupSortFlatten(_.cloneDeep(dataSet), dataConfig);
-    console.log('###### dataGroupSortFlatten sets ######', groupedSortFlattenSets);
-    cfgDataStore.setItem(lotKey, groupedSortFlattenSets).then((unitSets)=>{
+    console.log('###### raw data ######', lotKey, dataSet);
+    const groupedSortFlattenSets = dataGroupSortFlatten(_.cloneDeep(dataSet), dataProcess);
+    proDataStore.setItem(lotKey, groupedSortFlattenSets).then((unitSets)=>{
       lotStoreStatus[lotKey] = 'done';
     }).catch((err)=>{
       throw new Error(err);
@@ -413,8 +412,8 @@ const processAndStoreConfigData = async (dataConfig, rawDataStore, cfgDataStore)
 };
 
 
-const dataGroupSortFlatten = (data, dataConfig) => {
-  const { groupBy, sortBy } = dataConfig;
+const dataGroupSortFlatten = (data, dataProcess) => {
+  const { groupBy, sortBy } = dataProcess;
   const groupFlag = (groupBy && Array.isArray(groupBy) && (groupBy.length > 0));
   const sortFlag = (sortBy && Array.isArray(sortBy) && (sortBy.length > 0));
   const groupSets = _.groupBy(data, (o)=>{
@@ -435,15 +434,15 @@ const dataGroupSortFlatten = (data, dataConfig) => {
       if(val.length === 0) {
         obj = {};
       } else if(val.length === 1) {
-        obj = {'FL': dataFlattern(val[0], dataConfig)};
+        obj = {'FL': dataFlattern(val[0], dataProcess)};
         obj['FL']['Rank'] = 'FL';
       } else if(val.length > 1) {
         for(let i=0; i<val.length; i++) {
           if(i < val.length-1) {
-            obj[(i+1).toString()] = dataFlattern(val[i], dataConfig);
+            obj[(i+1).toString()] = dataFlattern(val[i], dataProcess);
             obj[(i+1).toString()]['Rank'] = (i+1).toString();
           } else {
-            obj['L'] = dataFlattern(val[i], dataConfig);
+            obj['L'] = dataFlattern(val[i], dataProcess);
             obj['L']['Rank'] = 'L';
           }
         }
@@ -455,9 +454,9 @@ const dataGroupSortFlatten = (data, dataConfig) => {
 };
 
 
-const dataFlattern = (data, dataConfig) => {
-  if(dataConfig.flatten && dataConfig.flatten.length > 0) {
-    const flatten = dataConfig.flatten;
+const dataFlattern = (data, dataProcess) => {
+  if(dataProcess.flatten && dataProcess.flatten.length > 0) {
+    const flatten = dataProcess.flatten;
     for(let i in data) {
       for(let j in flatten) {
         const key = data[i][flatten[j][0]];
@@ -496,29 +495,30 @@ const dataFlattern = (data, dataConfig) => {
 //===================================================================================
 //===================================================================================
 
-const processAndStoreOutputData = async (outputConfig, cfgDataStore, outDataStore) => {
+const processAndStoreCfgData = async (dataConfig, proDataStore, cfgDataStore) => {
   console.log('###### process and store output data ######');
-  const isRankAll = (!(outputConfig.body.rank && Array.isArray(outputConfig.body.rank) && outputConfig.body.rank.length > 0));
-  const columnConfList = getColumnConfig(outputConfig);
-  const lotKeys = await cfgDataStore.keys();
+  const isRankAll = (!(dataConfig.body.rank && Array.isArray(dataConfig.body.rank) && dataConfig.body.rank.length > 0));
+  const columnConfList = getColumnConfig(dataConfig);
+  const lotKeys = await proDataStore.keys();
   const lotStoreStatus = {};
   for(let i in lotKeys) {
     const lotKey = lotKeys[i];
     lotStoreStatus[lotKey] = 'start';
-    const unitsSet = await cfgDataStore.getItem(lotKey);
-    let rankUnitsSet = {};
-    for(let unitID in unitsSet) {
-      const unitSet = unitsSet[unitID];
-      const rank = isRankAll ? Object.keys(unitSet) : outputConfig.body.rank;
+    const lotGroupedDataSet = await proDataStore.getItem(lotKey);
+    console.log('###### processed data ######',lotKey, lotGroupedDataSet);
+    let groupRankSet = {};
+    for(let groupData in lotGroupedDataSet) {
+      const unitSet = lotGroupedDataSet[groupData];
+      const rank = isRankAll ? Object.keys(unitSet) : dataConfig.body.rank;
       for(let i in rank) {
         if(unitSet.hasOwnProperty(rank[i])) {
-          if(!rankUnitsSet[unitID]) rankUnitsSet[unitID] = {};
-          rankUnitsSet[unitID][[rank[i]]] = outputRowData(unitSet[rank[i]], columnConfList);
+          if(!groupRankSet[groupData]) groupRankSet[groupData] = {};
+          groupRankSet[groupData][[rank[i]]] = outputRowData(unitSet[rank[i]], columnConfList);
         }
       }
     }
-    console.log('====== rankUnitsSet ======', rankUnitsSet);
-    outDataStore.setItem(lotKey, rankUnitsSet).then(()=>{
+    console.log('###### config data ######',lotKey, groupRankSet);
+    cfgDataStore.setItem(lotKey, groupRankSet).then(()=>{
       lotStoreStatus[lotKey] = 'done';
     }).catch((err)=>{
       throw new Error(err);
@@ -530,8 +530,8 @@ const processAndStoreOutputData = async (outputConfig, cfgDataStore, outDataStor
 };
 
 
-const getColumnConfig = (outputConfig) => {
-  const columns = outputConfig.body.columns;
+const getColumnConfig = (dataConfig) => {
+  const columns = dataConfig.body.columns;
   const columnConfList = [];
   for(let i in columns) {
     const column = columns[i];
