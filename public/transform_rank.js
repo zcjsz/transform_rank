@@ -19,6 +19,7 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
     "_source": [
       "LotNumber",
       "Operation",
+      "Tester",
       "UnitId",
       "StartTestTime",
       "context",
@@ -36,8 +37,8 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
             }
           },
           {
-            "term": {
-              "LotNumber": "HG00390"
+            "terms": {
+              "LotNumber": ["HG00390", "HG00329"]
             }
           },
           {
@@ -69,7 +70,7 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
   };
 
   const dataConfigDefault = {
-    "groupBy":  ["UnitId"],
+    "groupBy":  ["Tester", "UnitId"],
     "sortBy" :  ["StartTestTime"],
     "flatten":  [["context", "value"]]
   };
@@ -107,6 +108,11 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
             "value": "6278"
           }
         ]
+      },
+
+      {
+        "name": "Tester",
+        "source": "Tester"
       },
 
       {

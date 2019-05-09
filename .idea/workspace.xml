@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4b7b8b63-07f4-4795-acf4-a5202bf9a20f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/options_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/options_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/request_handler.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/request_handler.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/transform_rank.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/transform_rank.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/node_modules/" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -17,12 +16,12 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="true">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/request_handler.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="395">
-              <caret line="406" column="27" lean-forward="true" selection-start-line="406" selection-start-column="27" selection-end-line="406" selection-end-column="27" />
+            <state relative-caret-position="123">
+              <caret line="401" column="32" selection-start-line="401" selection-start-column="10" selection-end-line="401" selection-end-column="32" />
               <folding>
                 <element signature="e#0#86#0" expanded="true" />
                 <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
@@ -35,7 +34,7 @@
         <entry file="file://$PROJECT_DIR$/public/ArithExprCalc.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="330">
-              <caret line="15" column="26" lean-forward="true" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
+              <caret line="15" column="26" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -61,7 +60,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/LogicExprEval.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="518">
+            <state relative-caret-position="3894">
               <caret line="177" column="16" lean-forward="true" selection-start-line="177" selection-start-column="16" selection-end-line="177" selection-end-column="16" />
             </state>
           </provider>
@@ -85,11 +84,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/transform_rank.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2640">
-              <caret line="174" lean-forward="true" selection-start-line="174" selection-end-line="174" />
+            <state relative-caret-position="352">
+              <caret line="73" column="34" lean-forward="true" selection-start-line="73" selection-start-column="34" selection-end-line="73" selection-end-column="34" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -203,10 +202,10 @@
         <option value="$PROJECT_DIR$/public/2.js" />
         <option value="$PROJECT_DIR$/public/ArithExprCalc.js" />
         <option value="$PROJECT_DIR$/public/LogicExprEval.js" />
-        <option value="$PROJECT_DIR$/public/transform_rank.js" />
         <option value="$PROJECT_DIR$/public/options_template.html" />
         <option value="$PROJECT_DIR$/public/options_template.css" />
         <option value="$PROJECT_DIR$/public/request_handler.js" />
+        <option value="$PROJECT_DIR$/public/transform_rank.js" />
       </list>
     </option>
   </component>
@@ -366,7 +365,8 @@
       <workItem from="1556498532320" duration="35629000" />
       <workItem from="1556605299816" duration="7647000" />
       <workItem from="1557102976078" duration="622000" />
-      <workItem from="1557103625085" duration="64594000" />
+      <workItem from="1557103625085" duration="64674000" />
+      <workItem from="1557363021458" duration="1588000" />
     </task>
     <task id="LOCAL-00001" summary="new repo">
       <created>1555669402262</created>
@@ -452,14 +452,22 @@
       <option name="project" value="LOCAL" />
       <updated>1557303055464</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="repo 20190508181300">
+      <created>1557310421587</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1557310421587</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="409450000" />
+    <option name="totallyTimeSpent" value="411118000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="51" y="25" width="1869" height="1055" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49500555" visible="true" weight="0.21289274" />
       <window_info id="Structure" order="1" sideWeight="0.50499445" side_tool="true" weight="0.21289274" />
@@ -506,7 +514,8 @@
     <MESSAGE value="repo 20190506180400" />
     <MESSAGE value="repo 20190507165700" />
     <MESSAGE value="repo 20190508161000" />
-    <option name="LAST_COMMIT_MESSAGE" value="repo 20190508161000" />
+    <MESSAGE value="repo 20190508181300" />
+    <option name="LAST_COMMIT_MESSAGE" value="repo 20190508181300" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/public/plotly_table.html" />
@@ -687,20 +696,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/test.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="9" column="37" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/new 2.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3168">
-          <caret line="144" column="3" selection-start-line="144" selection-start-column="3" selection-end-line="144" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utils/ExpCalc.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="291">
@@ -708,13 +703,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/.editorconfig">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/2.js">
+    <entry file="file://$PROJECT_DIR$/public/.editorconfig" />
+    <entry file="file://$PROJECT_DIR$/public/2.js" />
+    <entry file="file://$PROJECT_DIR$/public/options_template.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+        <state relative-caret-position="330">
+          <caret line="15" column="1" lean-forward="true" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/ArithExprCalc.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="15" column="26" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/test.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="9" column="37" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
         </state>
       </provider>
     </entry>
@@ -727,22 +735,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/LogicExprEval.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="518">
+        <state relative-caret-position="3894">
           <caret line="177" column="16" lean-forward="true" selection-start-line="177" selection-start-column="16" selection-end-line="177" selection-end-column="16" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/ArithExprCalc.js">
+    <entry file="file://$PROJECT_DIR$/public/MyRow.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="15" column="26" lean-forward="true" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
+        <state relative-caret-position="198">
+          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/options_template.css">
+    <entry file="file://$PROJECT_DIR$/new 2.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="15" column="1" lean-forward="true" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+        <state relative-caret-position="3168">
+          <caret line="144" column="3" selection-start-line="144" selection-start-column="3" selection-end-line="144" selection-end-column="3" />
         </state>
       </provider>
     </entry>
@@ -763,30 +771,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/MyRow.js">
+    <entry file="file://$PROJECT_DIR$/public/request_handler.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
+        <state relative-caret-position="123">
+          <caret line="401" column="32" selection-start-line="401" selection-start-column="10" selection-end-line="401" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#86#0" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/transform_rank.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2640">
-          <caret line="174" lean-forward="true" selection-start-line="174" selection-end-line="174" />
+        <state relative-caret-position="352">
+          <caret line="73" column="34" lean-forward="true" selection-start-line="73" selection-start-column="34" selection-end-line="73" selection-end-column="34" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/request_handler.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="395">
-          <caret line="406" column="27" lean-forward="true" selection-start-line="406" selection-start-column="27" selection-end-line="406" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#86#0" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
