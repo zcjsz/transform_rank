@@ -1,26 +1,29 @@
 import { dashboardContextProvider } from 'plugins/kibana/dashboard/dashboard_context';
 import axios from 'axios';
 import _ from 'lodash';
-import localforage from 'localforage';
-import ArithExprCalc from './ArithExprCalc';
-import LogicExprEval from './LogicExprEval';
+import Localforage from 'localforage';
+import MyLocalforage from '../src/MyLocalforage';
+import ArithExprCalc from '../utils/ArithExprCalc';
+import LogicExprEval from '../utils/LogicExprEval';
 
 export const createRequestHandler = function(Private, es, indexPatterns, $sanitize) {
 
   console.log('@@@@@@ createRequestHandler @@@@@@');
 
   let flag = true;
-  let rawDataStore, proDataStore, cfgDataStore;
 
-  window.onbeforeunload = function() {
-    deleteDBStore("rawDataStore", rawDataStore);
-    deleteDBStore("proDataStore", proDataStore);
-    deleteDBStore("cfgDataStore", cfgDataStore);
+  const localStoreNames = ["rawDataStore", "proDataStore", "cfgDataStore"];
+  const myLocalforage = new MyLocalforage();
+  myLocalforage.setLocalStoreNames(localStoreNames);
+
+  window.onbeforeunload = async function() {
+    await myLocalforage.dropLocalStores();
+    // await myLocalforage.deleteLocalStores();
   };
 
   const myRequestHandler = (vis, state) => {
 
-    console.log('@@@@@@ myRequestHandler @@@@@@');
+    console.log('@@@@@@ myRequestHandler @@@@@@', Localforage, window);
 
     if(flag) {
       vis.params.IndexPattern.Next = '';
@@ -46,25 +49,10 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
 
         const statTime = new Date();
 
-        // query.isChanged = false;
-        // dataProcess.isChanged = false;
+        const { rawDataStore, proDataStore, cfgDataStore } = myLocalforage.createLocalStores();
 
         if(query.isChanged) {
-          if(rawDataStore) {
-            await rawDataStore.clear().then(()=>{console.log('raw data store is empty!')});
-          } else {
-            rawDataStore = localforage.createInstance({name: 'rawDataStore'});
-          }
-          if(proDataStore) {
-            await proDataStore.clear().then(()=>{console.log('pro data store is empty!')});
-          } else {
-            proDataStore = localforage.createInstance({name: 'proDataStore'});
-          }
-          if(cfgDataStore) {
-            await cfgDataStore.clear().then(()=>{console.log('cfg data store is empty!')});
-          } else {
-            cfgDataStore = localforage.createInstance({name: 'cfgDataStore'});
-          }
+          await myLocalforage.clearLocalStores();
         }
 
         if(query.isChanged) {

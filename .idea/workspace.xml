@@ -2,8 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4b7b8b63-07f4-4795-acf4-a5202bf9a20f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/MyLocalforage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/transform_rank.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/transform_rank.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ArithExprCalc.js" beforeDir="false" afterPath="$PROJECT_DIR$/utils/ArithExprCalc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/LogicExprEval.js" beforeDir="false" afterPath="$PROJECT_DIR$/utils/LogicExprEval.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/request_handler.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/request_handler.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/test.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/node_modules/" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -17,11 +23,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/request_handler.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="123">
-              <caret line="401" column="32" selection-start-line="401" selection-start-column="10" selection-end-line="401" selection-end-column="32" />
+            <state relative-caret-position="440">
+              <caret line="20" column="4" selection-start-line="20" selection-start-column="7" selection-end-line="20" selection-end-column="47" />
               <folding>
                 <element signature="e#0#86#0" expanded="true" />
                 <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
@@ -31,19 +37,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/ArithExprCalc.js">
+        <entry file="file://$PROJECT_DIR$/utils/LogicExprEval.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="15" column="26" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
+            <state relative-caret-position="1355">
+              <caret line="302" lean-forward="true" selection-start-line="302" selection-end-line="302" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/test.js">
+        <entry file="file://$PROJECT_DIR$/src/MyLocalforage.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="9" column="37" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
+            <state relative-caret-position="154">
+              <caret line="73" lean-forward="true" selection-start-line="73" selection-end-line="73" />
             </state>
           </provider>
         </entry>
@@ -51,68 +57,23 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="176">
-              <caret line="8" column="27" lean-forward="true" selection-start-line="8" selection-start-column="27" selection-end-line="8" selection-end-column="27" />
+            <state relative-caret-position="110">
+              <caret line="17" column="18" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/LogicExprEval.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3894">
-              <caret line="177" column="16" lean-forward="true" selection-start-line="177" selection-start-column="16" selection-end-line="177" selection-end-column="16" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/MyRow.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/new 2.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3168">
-              <caret line="144" column="3" selection-start-line="144" selection-start-column="3" selection-end-line="144" selection-end-column="3" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/transform_rank.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="352">
-              <caret line="73" column="34" lean-forward="true" selection-start-line="73" selection-start-column="34" selection-end-line="73" selection-end-column="34" />
+            <state relative-caret-position="154">
+              <caret line="189" column="33" lean-forward="true" selection-start-line="189" selection-start-column="33" selection-end-line="189" selection-end-column="33" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/options_template.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
-              <caret line="10" column="32" lean-forward="true" selection-start-line="10" selection-start-column="32" selection-end-line="10" selection-end-column="32" />
-              <folding>
-                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/MyColumn.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="9" column="3" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="3" />
             </state>
           </provider>
         </entry>
@@ -130,13 +91,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>editor_controller</find>
-      <find>ReactDOM</find>
-      <find>msearch</find>
-      <find>q1FieldsNew</find>
-      <find>222px</find>
-      <find>validQueryFlag</find>
-      <find>transform_vis</find>
       <find>VisTypesRegistryProvider</find>
       <find>getInjected</find>
       <find>plotly</find>
@@ -160,6 +114,13 @@
       <find>REG_MINUS</find>
       <find>outputDataStore</find>
       <find>REG_NUMBER</find>
+      <find>dataConfig</find>
+      <find>cfgDataStore</find>
+      <find>outDataStore</find>
+      <find>DataConfig</find>
+      <find>outputConfig</find>
+      <find>OutputConfig</find>
+      <find>ExpCalc</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -185,27 +146,30 @@
         <option value="$PROJECT_DIR$/public/serverRoutes.js" />
         <option value="$PROJECT_DIR$/index.js" />
         <option value="$PROJECT_DIR$/public/myclass.js" />
-        <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/server/routes/serverRoutes.js" />
         <option value="$PROJECT_DIR$/public/vis_controller.js" />
         <option value="$PROJECT_DIR$/public/editor_controller.js" />
         <option value="$PROJECT_DIR$/public/response_handler.js" />
         <option value="$PROJECT_DIR$/public/MyColumn.js" />
         <option value="$PROJECT_DIR$/public/MyRow.js" />
-        <option value="$PROJECT_DIR$/public/test.js" />
         <option value="$PROJECT_DIR$/utils/ExpCalc.js" />
         <option value="$PROJECT_DIR$/LogicEval.js" />
         <option value="$PROJECT_DIR$/public/LogicEval.js" />
         <option value="$PROJECT_DIR$/public/ExprCalc.js" />
         <option value="$PROJECT_DIR$/new 2.txt" />
-        <option value="$PROJECT_DIR$/public/1.js" />
         <option value="$PROJECT_DIR$/public/2.js" />
         <option value="$PROJECT_DIR$/public/ArithExprCalc.js" />
         <option value="$PROJECT_DIR$/public/LogicExprEval.js" />
-        <option value="$PROJECT_DIR$/public/options_template.html" />
         <option value="$PROJECT_DIR$/public/options_template.css" />
-        <option value="$PROJECT_DIR$/public/request_handler.js" />
         <option value="$PROJECT_DIR$/public/transform_rank.js" />
+        <option value="$PROJECT_DIR$/public/options_template.html" />
+        <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/public/test.js" />
+        <option value="$PROJECT_DIR$/utils/ArithExprCalc.js" />
+        <option value="$PROJECT_DIR$/public/1.js" />
+        <option value="$PROJECT_DIR$/utils/LogicExprEval.js" />
+        <option value="$PROJECT_DIR$/src/MyLocalforage.js" />
+        <option value="$PROJECT_DIR$/public/request_handler.js" />
       </list>
     </option>
   </component>
@@ -245,6 +209,11 @@
               <item name="transform_rank" type="462c0819:PsiDirectoryNode" />
               <item name="public" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="transform_rank" type="b2602c69:ProjectViewProjectNode" />
+              <item name="transform_rank" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -272,6 +241,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/utils" />
       <recent name="$PROJECT_DIR$/public" />
       <recent name="$PROJECT_DIR$/server/routes" />
     </key>
@@ -288,17 +258,17 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.LogicExprEval.js">
+  <component name="RunManager" selected="Node.js.1.js">
     <configuration name="1.js" type="NodeJSConfigurationType" path-to-node="$USER_HOME$/.nvm/versions/node/v8.11.4/bin/node" nameIsGenerated="true" path-to-js-file="public/1.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
     <configuration name="2.js" type="NodeJSConfigurationType" temporary="true" path-to-node="$USER_HOME$/.nvm/versions/node/v8.11.4/bin/node" nameIsGenerated="true" path-to-js-file="public/2.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="ArithExprCalc.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/public/ArithExprCalc.js" working-dir="$PROJECT_DIR$">
+    <configuration name="ArithExprCalc.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/utils/ArithExprCalc.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="LogicExprEval.js" type="NodeJSConfigurationType" temporary="true" path-to-node="$USER_HOME$/.nvm/versions/node/v8.11.4/bin/node" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/public/LogicExprEval.js" working-dir="$PROJECT_DIR$">
+    <configuration name="LogicExprEval.js" type="NodeJSConfigurationType" temporary="true" path-to-node="$USER_HOME$/.nvm/versions/node/v8.11.4/bin/node" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/utils/LogicExprEval.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
     <configuration name="test.js" type="NodeJSConfigurationType" temporary="true" path-to-node="$USER_HOME$/.nvm/versions/node/v8.11.4/bin/node" nameIsGenerated="true" path-to-js-file="public/test.js" working-dir="$PROJECT_DIR$">
@@ -313,9 +283,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.test.js" />
         <item itemvalue="Node.js.LogicExprEval.js" />
         <item itemvalue="Node.js.2.js" />
-        <item itemvalue="Node.js.test.js" />
         <item itemvalue="Node.js.ArithExprCalc.js" />
       </list>
     </recent_temporary>
@@ -366,7 +336,8 @@
       <workItem from="1556605299816" duration="7647000" />
       <workItem from="1557102976078" duration="622000" />
       <workItem from="1557103625085" duration="64674000" />
-      <workItem from="1557363021458" duration="1588000" />
+      <workItem from="1557363021458" duration="13635000" />
+      <workItem from="1557385538868" duration="11076000" />
     </task>
     <task id="LOCAL-00001" summary="new repo">
       <created>1555669402262</created>
@@ -459,11 +430,25 @@
       <option name="project" value="LOCAL" />
       <updated>1557310421587</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="repo 20190509092400">
+      <created>1557365054782</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1557365054782</updated>
+    </task>
+    <task id="LOCAL-00015" summary="repo 20190509103200">
+      <created>1557369169473</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1557369169473</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="411118000" />
+    <option name="totallyTimeSpent" value="434241000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="51" y="25" width="1869" height="1055" extended-state="6" />
@@ -515,10 +500,11 @@
     <MESSAGE value="repo 20190507165700" />
     <MESSAGE value="repo 20190508161000" />
     <MESSAGE value="repo 20190508181300" />
-    <option name="LAST_COMMIT_MESSAGE" value="repo 20190508181300" />
+    <MESSAGE value="repo 20190509092400" />
+    <MESSAGE value="repo 20190509103200" />
+    <option name="LAST_COMMIT_MESSAGE" value="repo 20190509103200" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/public/plotly_table.html" />
     <entry file="file://$PROJECT_DIR$/public/try.html" />
     <entry file="file://$PROJECT_DIR$/yarn.lock">
       <provider selected="true" editor-type-id="text-editor">
@@ -617,13 +603,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/transform_rank.less" />
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="805">
-          <caret line="37" column="24" selection-start-line="37" selection-start-column="24" selection-end-line="37" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/eslint/lib/config/config-initializer.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="291">
@@ -679,17 +658,33 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.js">
+    <entry file="file://$PROJECT_DIR$/public/.editorconfig" />
+    <entry file="file://$PROJECT_DIR$/public/2.js" />
+    <entry file="file://$PROJECT_DIR$/public/options_template.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="563">
-          <caret line="27" column="39" lean-forward="true" selection-start-line="27" selection-start-column="39" selection-end-line="27" selection-end-column="39" />
+        <state relative-caret-position="330">
+          <caret line="15" column="1" lean-forward="true" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/MyRow.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/new 2.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3168">
+          <caret line="144" column="3" selection-start-line="144" selection-start-column="3" selection-end-line="144" selection-end-column="3" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/response_handler.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="12" column="53" selection-start-line="12" selection-start-column="53" selection-end-line="12" selection-end-column="53" />
+        <state relative-caret-position="-123">
+          <caret line="222" column="32" lean-forward="true" selection-start-line="222" selection-start-column="32" selection-end-line="222" selection-end-column="32" />
           <folding>
             <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
           </folding>
@@ -703,61 +698,41 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/.editorconfig" />
-    <entry file="file://$PROJECT_DIR$/public/2.js" />
-    <entry file="file://$PROJECT_DIR$/public/options_template.css">
+    <entry file="file://$PROJECT_DIR$/public/1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="15" column="1" lean-forward="true" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+        <state relative-caret-position="110">
+          <caret line="17" column="18" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/ArithExprCalc.js">
+    <entry file="file://$PROJECT_DIR$/utils/ArithExprCalc.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="15" column="26" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
+        <state relative-caret-position="373">
+          <caret line="238" column="27" selection-start-line="238" selection-start-column="27" selection-end-line="238" selection-end-column="27" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/test.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="9" column="37" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
+        <state relative-caret-position="220">
+          <caret line="10" column="38" selection-start-line="10" selection-start-column="38" selection-end-line="10" selection-end-column="38" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/1.js">
+    <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="8" column="27" lean-forward="true" selection-start-line="8" selection-start-column="27" selection-end-line="8" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/LogicExprEval.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3894">
-          <caret line="177" column="16" lean-forward="true" selection-start-line="177" selection-start-column="16" selection-end-line="177" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/MyRow.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/new 2.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3168">
-          <caret line="144" column="3" selection-start-line="144" selection-start-column="3" selection-end-line="144" selection-end-column="3" />
+        <state relative-caret-position="588">
+          <caret line="27" column="39" selection-start-line="27" selection-start-column="39" selection-end-line="27" selection-end-column="39" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/options_template.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="10" column="32" lean-forward="true" selection-start-line="10" selection-start-column="32" selection-end-line="10" selection-end-column="32" />
+        <state relative-caret-position="440">
+          <caret line="20" column="50" selection-start-line="20" selection-start-column="50" selection-end-line="20" selection-end-column="50" />
           <folding>
             <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
           </folding>
@@ -771,23 +746,44 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/request_handler.js">
+    <entry file="file://$PROJECT_DIR$/public/transform_rank.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="123">
-          <caret line="401" column="32" selection-start-line="401" selection-start-column="10" selection-end-line="401" selection-end-column="32" />
+        <state relative-caret-position="154">
+          <caret line="189" column="33" lean-forward="true" selection-start-line="189" selection-start-column="33" selection-end-line="189" selection-end-column="33" />
           <folding>
-            <element signature="e#0#86#0" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="e#0#39#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/transform_rank.js">
+    <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="73" column="34" lean-forward="true" selection-start-line="73" selection-start-column="34" selection-end-line="73" selection-end-column="34" />
+        <state relative-caret-position="519">
+          <caret line="35" column="28" lean-forward="true" selection-start-line="35" selection-start-column="28" selection-end-line="35" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/LogicExprEval.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1355">
+          <caret line="302" lean-forward="true" selection-start-line="302" selection-end-line="302" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/MyLocalforage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="73" lean-forward="true" selection-start-line="73" selection-end-line="73" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/request_handler.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="20" column="4" selection-start-line="20" selection-start-column="7" selection-end-line="20" selection-end-column="47" />
           <folding>
-            <element signature="e#0#39#0" expanded="true" />
+            <element signature="e#0#86#0" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>

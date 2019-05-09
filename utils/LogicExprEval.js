@@ -321,10 +321,10 @@ const isNotBetween = (x, y) => {
   }
 };
 
-const exp = "(FT == FT) && ((HG00391 :: [HG00392, HG00391]) || (100.2 >= 100) || (10 > 20))";
-const logicEval = new LogicExprEval();
-logicEval.set(exp).trim().print();
-logicEval.set(exp).trim().segment().printSeg();
+// const exp = "(FT == FT) && ((HG00391 :: [HG00392, HG00391]) || (100.2 >= 100) || (10 > 20))";
+// const logicEval = new LogicExprEval();
+// logicEval.set(exp).trim().print();
+// logicEval.set(exp).trim().segment().printSeg();
 // logicEval.set(exp).trim().segment().toRpn().printRpnSeg();
 // logicEval.set(exp).trim().segment().toRpn().evalRpn().printResult();
 

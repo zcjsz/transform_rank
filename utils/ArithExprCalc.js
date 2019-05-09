@@ -239,9 +239,9 @@ class ArithExprCalc {
   // Expression calculation
   calc(exp) {
     if(exp) {
-      this.set(exp).trim().minus().segment().toRpn().evalRpn();
+      this.set(exp).trim().minus().segment().toRpn().calcRpn();
     } else {
-      this.trim().minus().segment().toRpn().evalRpn();
+      this.trim().minus().segment().toRpn().calcRpn();
     }
     if(this.valid) {
       return this.result;
