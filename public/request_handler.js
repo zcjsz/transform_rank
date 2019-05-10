@@ -1,7 +1,6 @@
 import { dashboardContextProvider } from 'plugins/kibana/dashboard/dashboard_context';
 import axios from 'axios';
 import _ from 'lodash';
-import Localforage from 'localforage';
 import MyLocalforage from '../src/MyLocalforage';
 import ArithExprCalc from '../utils/ArithExprCalc';
 import LogicExprEval from '../utils/LogicExprEval';
@@ -23,7 +22,7 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
 
   const myRequestHandler = (vis, state) => {
 
-    console.log('@@@@@@ myRequestHandler @@@@@@', Localforage, window);
+    console.log('@@@@@@ myRequestHandler @@@@@@');
 
     if(flag) {
       vis.params.IndexPattern.Next = '';
