@@ -72,7 +72,95 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
   const dataConfigDefault = {
     "groupBy":  ["Tester", "UnitId"],
     "sortBy" :  ["StartTestTime"],
-    "flatten":  [["context", "value"]]
+    "flatten":  [["context", "value"]],
+    "rank":     ["1"],
+    "columns": [
+      {
+        "name": "Lot Number",
+        "source": "LotNumber"
+      },
+      {
+        "name": "Operation",
+        "source": "Operation"
+      },
+      {
+        "name": "Cam Oper",
+        "default": "",
+        "source": {
+          "A": "Operation",
+          "B": "LotNumber",
+          "C": "[HG00390, HG00391]"
+        },
+        "filters": [
+          {
+            "filter": "(@A == FT) && (@B :: @C)",
+            "value": "6260"
+          },
+          {
+            "filter": "@A == FT2",
+            "value": "6278"
+          }
+        ]
+      },
+      {
+        "name": "Tester",
+        "source": "Tester"
+      },
+      {
+        "name": "Unit ID",
+        "source": "UnitId"
+      },
+      {
+        "name": "StartTestTime",
+        "source": "StartTestTime"
+      },
+      {
+        "name": "5mA_drive0_Vmin",
+        "source": "pcie_static_ifvm_5mA_drive0_Vmin"
+      },
+      {
+        "name": "0mA_drive0_Vmin",
+        "source": "pcie_static_ifvm_0mA_drive0_Vmin"
+      },
+      {
+        "name": "Param-value",
+        "source": {
+          "A": "pcie_static_ifvm_5mA_drive0_Vmin",
+          "B": "pcie_static_ifvm_0mA_drive0_Vmin"
+        },
+        "value": "@A + @B"
+      },
+      {
+        "name": "Param-expr",
+        "source": {
+          "A": "pcie_static_ifvm_5mA_drive0_Vmin",
+          "B": "pcie_static_ifvm_0mA_drive0_Vmin"
+        },
+        "expr": "((@A + @B) / 2) * 100"
+      },
+      {
+        "name": "UID-Flag",
+        "source": {
+          "A": "LotNumber",
+          "B": "UnitId",
+          "C": "col[Param-expr]"
+        },
+        "filters": [
+          {
+            "filter": "(@A == HG00390) && (@B :: [H802V0015041204, H802V0021083004, H802V0024071704]) && (@C > 1)",
+            "value": "SS"
+          },
+          {
+            "filter": "(@A != HG00390) || (@B !: [H802V0015041204, H802V0021083004, H802V0024071704])",
+            "value": "SA"
+          }
+        ]
+      },
+      {
+        "name": "Rank",
+        "source": "Rank"
+      }
+    ]
   };
 
   const outputConfigDefault = {
@@ -198,11 +286,11 @@ function TransformVisProvider(Private, es, indexPatterns, $sanitize) {
           Prev: JSON.stringify(querydsl,null, 2),
           Next: JSON.stringify(querydsl,null, 2),
         },
-        DataProcess: {
+        DataConfig: {
           Prev: JSON.stringify(dataConfigDefault, null, 2),
           Next: JSON.stringify(dataConfigDefault, null, 2),
         },
-        DataConfig: {
+        OutputConfig: {
           Prev: JSON.stringify(outputConfigDefault,null,2),
           Next: JSON.stringify(outputConfigDefault,null,2),
         }
