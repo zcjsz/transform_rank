@@ -1,11 +1,11 @@
-class QueryConfigReader {
+class ReaderQueryConfig {
 
   constructor(vis, indexPatterns) {
     this.vis = vis;
     this.indexPatterns = indexPatterns;
   }
 
-  async getQueryConfig() {
+  async getConfig() {
     let index = null;
     let body = null;
     let validQuery = false;
@@ -54,4 +54,4 @@ class QueryConfigReader {
 }
 
 
-export default QueryConfigReader;
+export default ReaderQueryConfig;

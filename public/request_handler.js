@@ -1,12 +1,8 @@
 import { dashboardContextProvider } from 'plugins/kibana/dashboard/dashboard_context';
-import axios from 'axios';
-import _ from 'lodash';
 import MyLocalforage from '../src/MyLocalforage';
-import QueryConfigReader from '../src/QueryConfigReader';
-import DataConfigReader from '../src/DataConfigReader';
+import ReaderQueryConfig from '../src/ReaderQueryConfig';
+import ReaderDataConfig from '../src/ReaderDataConfig';
 import TestDataQuery from '../src/TestDataQuery';
-import ArithExprCalc from '../utils/ArithExprCalc';
-import LogicExprEval from '../utils/LogicExprEval';
 import TestDataProcessor from "../src/TestDataProcessor";
 
 export const createRequestHandler = function(Private, es, indexPatterns, $sanitize) {
@@ -34,21 +30,20 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
     }
     flag = false;
 
-    const queryConfigReader = new QueryConfigReader(vis, indexPatterns);
-    const dataConfigReader = new DataConfigReader(vis);
+    const queryConfigReader = new ReaderQueryConfig(vis, indexPatterns);
+    const dataConfigReader = new ReaderDataConfig(vis);
 
     const handleRequest = async () => {
 
+      console.log('****** myRequestHandler handleRequest ******');
+
       try {
 
-        const queryConfig = await queryConfigReader.getQueryConfig();
+        const queryConfig = await queryConfigReader.getConfig();
         console.log('===== query config reader =====', queryConfig);
 
-        const dataConfig = dataConfigReader.getDataConfig();
+        const dataConfig = dataConfigReader.getConfig();
         console.log('===== data config reader =====', dataConfig);
-
-        // const outputConfig = getOutputConfigSetting(vis);
-        // console.log('===== output config =====', outputConfig);
 
         const statTime = new Date();
 
@@ -68,15 +63,12 @@ export const createRequestHandler = function(Private, es, indexPatterns, $saniti
           await testDataProcessor.process();
         }
 
-        // if(queryConfig.isChanged || dataConfig.isChanged || outputConfig.isChanged) {
-        //   await processAndStoreOutData(outputConfig, cfgDataStore, outDataStore);
-        // }
-
         console.log('used time: ', (new Date() - statTime));
 
         return({
-          result: {hits:[]},
-          config: 'config',
+          dataStore: cfgDataStore,
+          queryConfig: queryConfig,
+          dataConfig: dataConfig
         })
 
       } catch(err) {
@@ -115,15 +107,4 @@ const display_error = (message) => {
   return `<div style="color:red"><i>${message}</i></div>`;
 };
 
-const getOutputConfigSetting = (vis) => {
-  let isChanged = false;
-  if(vis.params.OutputConfig.Next !== vis.params.OutputConfig.Prev) {
-    vis.params.OutputConfig.Prev = vis.params.OutputConfig.Next;
-    isChanged = true;
-  }
-  return({
-    body: JSON.parse(vis.params.OutputConfig.Next),
-    isChanged: isChanged
-  });
-};
 

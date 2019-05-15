@@ -1,10 +1,10 @@
-class DataConfigReader {
+class ReaderDataConfig {
 
   constructor(vis) {
     this.vis = vis;
   }
 
-  getDataConfig = () => {
+  getConfig = () => {
     let isChanged = false;
     if(this.vis.params.DataConfig.Next !== this.vis.params.DataConfig.Prev) {
       this.vis.params.DataConfig.Prev = this.vis.params.DataConfig.Next;
@@ -18,4 +18,4 @@ class DataConfigReader {
 
 }
 
-export default DataConfigReader;
+export default ReaderDataConfig;

@@ -2,6 +2,7 @@ const Mustache = require('mustache');
 const Plotly = require('plotly.js');
 
 import plotTemplate from './plotly_chart.html';
+import Table from './Table';
 
 class VisController {
 

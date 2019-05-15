@@ -57,7 +57,6 @@ class TestDataProcessor {
       return 'done';
     }
   }
-
 }
 
 export default TestDataProcessor;
@@ -169,7 +168,7 @@ const outputRowData = (rawData, columnsConfig) => {
     rowDataByIndex[colConf.index] = cellValue;
     rowDataByColName[colConf.name] = cellValue;
   }
-  return rowDataByIndex;
+  return rowDataByColName;
 };
 
 
