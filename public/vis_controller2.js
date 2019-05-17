@@ -1,37 +1,87 @@
-import React, { Component } from 'react';
-import { Table } from './Table';
+import React, { Component, Fragment } from 'react';
+import Table from './Table';
 import DateFormatTable from './DateFormatTable';
+import {
+  EuiTab,
+  EuiTabs,
+  EuiSpacer
+} from '@elastic/eui';
 
 export class VisController2 extends Component {
 
   constructor(props) {
     super(props);
-    this.handleOnClick = this.handleOnClick.bind(this);
+    this.tabs = [
+      {
+        id: 'format',
+        name: 'Format',
+        disabled: false,
+      },
+      {
+        id: 'table',
+        name: 'Table',
+        disabled: false,
+      }
+    ];
+
+    this.state = {
+      selectedTabId: 'format',
+    };
   }
 
-  handleOnClick() {
+  onSelectedTabChanged = (id) => {
+    this.setState({
+      selectedTabId: id,
+    });
+  };
+
+  renderTabs() {
+    return this.tabs.map((tab, index) => (
+      <EuiTab
+        onClick={() => this.onSelectedTabChanged(tab.id)}
+        isSelected={tab.id === this.state.selectedTabId}
+        disabled={tab.disabled}
+        key={index}
+      >
+        {tab.name}
+      </EuiTab>
+    ));
+  }
+
+  handleOnClick = () => {
     console.log(this.props);
     this.props.vis.forceReload();
-  }
+  };
+
+  getComponent = (visData) => {
+    console.log(this.state.selectedTabId);
+    if(this.state.selectedTabId === 'format') {
+      return <DateFormatTable />
+    } else if(this.state.selectedTabId === 'table') {
+      return <Table visData={visData} />
+    } else {
+      return null;
+    }
+  };
 
   render() {
+    console.log('====== VisController2 ======');
     const { vis, visData } = this.props;
-    console.log('====== VisController2 ======',  vis, visData);
-
     if(visData.error) {
       return (
         <div>
           <div style={{textAlign:'center', color:'red'}}><i>{visData.error}</i></div>
           <button onClick={this.handleOnClick}>Click</button>
-          <DateFormatTable></DateFormatTable>
         </div>
       );
     } else {
       return (
         <div>
-          <Table visData={visData}/>
+          <EuiTabs>{this.renderTabs()}</EuiTabs>
+          <span>{ this.state.selectedTabId }</span>
+          { this.getComponent(visData) }
         </div>
-      )
+      );
     }
   }
 
