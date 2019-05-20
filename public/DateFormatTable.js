@@ -6,13 +6,12 @@ import {
 const DateFormatTable = () => {
     return (
       <div>
-        <h3 style={{fontWeight:"bold", fontSize:"20px", textAlign:"center"}}>Date Format Reference</h3>
+        <h3 style={{fontWeight:"bold", fontSize:"20px", textAlign:"center", marginTop:"10px"}}>Date Format Reference</h3>
         <EuiBasicTable
           items={generateTableItems(head, list)}
           columns={generateTableColumns(head)}
         />
       </div>
-
     );
 };
 

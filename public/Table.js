@@ -11,7 +11,7 @@ class Table extends Component {
     super(props);
     this.state = {
       pageIndex: 0,
-      pageSize: 50,
+      pageSize: 100,
       showPerPageOptions: true
     }
   }
@@ -71,7 +71,7 @@ class Table extends Component {
       pageIndex: pageIndex,
       pageSize: pageSize,
       totalItemCount: totalItemCount,
-      pageSizeOptions: [50, 100],
+      pageSizeOptions: [100, 500, 1000],
       hidePerPageOptions: showPerPageOptions
     };
 

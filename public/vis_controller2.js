@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import Table from './Table';
 import DateFormatTable from './DateFormatTable';
+import Inspect from './Inspect'
 import {
   EuiTab,
-  EuiTabs,
-  EuiSpacer
+  EuiTabs
 } from '@elastic/eui';
 
 export class VisController2 extends Component {
@@ -21,6 +21,11 @@ export class VisController2 extends Component {
         id: 'table',
         name: 'Table',
         disabled: false,
+      },
+      {
+        id: 'inspect',
+        name: 'Inspect',
+        disabled: false
       }
     ];
 
@@ -54,11 +59,12 @@ export class VisController2 extends Component {
   };
 
   getComponent = (visData) => {
-    console.log(this.state.selectedTabId);
     if(this.state.selectedTabId === 'format') {
       return <DateFormatTable />
     } else if(this.state.selectedTabId === 'table') {
       return <Table visData={visData} />
+    } else if(this.state.selectedTabId === 'inspect') {
+      return <Inspect visData={visData} />
     } else {
       return null;
     }
@@ -77,8 +83,9 @@ export class VisController2 extends Component {
     } else {
       return (
         <div>
-          <EuiTabs>{this.renderTabs()}</EuiTabs>
-          <span>{ this.state.selectedTabId }</span>
+          <EuiTabs>
+            { this.renderTabs() }
+          </EuiTabs>
           { this.getComponent(visData) }
         </div>
       );
